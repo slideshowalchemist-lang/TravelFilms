@@ -1,0 +1,71 @@
+---
+import { Icon } from 'astro-icon/components';
+import { SITE } from 'astrowind:config';
+import { getHomePermalink } from '~/utils/permalinks';
+
+interface Link {
+  text?: string;
+  href?: string;
+  ariaLabel?: string;
+  icon?: string;
+}
+
+interface Links {
+  title?: string;
+  links: Array<Link>;
+}
+
+export interface Props {
+  links: Array<Links>;
+  secondaryLinks: Array<Link>;
+  socialLinks: Array<Link>;
+  footNote?: string;
+  theme?: string;
+}
+
+const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+---
+
+<footer class="relative text-center py-28 px-6 bg-gradient-to-b from-transparent to-black text-white">
+
+  <!-- Background fade -->
+  <div class="absolute inset-0 -z-10 bg-black/80"></div>
+
+  <!-- Divider -->
+  <div class="w-16 h-px bg-gray-500 mx-auto mb-10 opacity-50"></div>
+
+  <!-- Brand -->
+  <h3 class="text-xl md:text-2xl font-light tracking-wide mb-4">
+    Travel Chronicles Studio
+  </h3>
+
+  <!-- Tagline -->
+  <p class="text-sm md:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
+    Capturing special lifetime memories, one frame at a time.
+  </p>
+
+  <!-- Social Links -->
+  {
+    socialLinks?.length ? (
+      <ul class="flex justify-center gap-4 mt-10">
+        {socialLinks.map(({ ariaLabel, href, icon }) => (
+          <li>
+            <a
+              href={href}
+              aria-label={ariaLabel}
+              class="text-gray-400 hover:text-white transition duration-300"
+            >
+              {icon && <Icon name={icon} class="w-5 h-5" />}
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : null
+  }
+
+  <!-- Closing note -->
+  <p class="text-xs text-gray-500 mt-12 italic tracking-wide">
+    Take only memories, leave only footprints.
+  </p>
+
+</footer>

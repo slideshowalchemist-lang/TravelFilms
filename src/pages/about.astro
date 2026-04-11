@@ -1,0 +1,57 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import { Image } from 'astro:assets';
+import aboutImage from '~/assets/images/Sunset.jpg';
+const metadata = {
+  title: 'About - Travel Chronicles Studio',
+};
+---
+
+<Layout metadata={metadata}>
+
+  <!-- HERO IMAGE -->
+<section class="relative w-full h-[60vh]">
+  <Image
+    src={aboutImage}
+    alt="Sunset travel scene"
+    class="w-full h-full object-cover"
+    loading="eager"
+  />
+
+  <!-- optional cinematic overlay -->
+  <div class="absolute inset-0 bg-black/20"></div>
+</section>
+
+  <!-- ABOUT CONTENT -->
+  <section class="max-w-3xl mx-auto px-6 py-16 prose prose-lg dark:prose-invert">
+
+    <p>
+      We’re a husband and wife team with a shared obsession: finding the next horizon.
+    </p>
+
+    <p>
+      Not the whip-cracking, temple-dodging kind of explorers… more the “early morning coffee in a new city,
+      maps open, camera charged, and curiosity leading the way” kind.
+    </p>
+
+    <p>
+      From ancient streets echoing with history to quiet corners most people walk straight past, we travel like
+      modern-day adventurers—always chasing stories, light, and moments that feel just a little bit larger than life.
+    </p>
+
+    <p>
+      We get lost often (on purpose… mostly), and somehow that’s where the best discoveries tend to happen—usually
+      followed by pastry and espresso.
+    </p>
+
+    <p>
+      For us, travel isn’t about ticking places off a list—it’s about collecting the feeling of being somewhere new, together.
+    </p>
+
+    <p>
+      And if there’s a little adventure along the way? Even better.
+    </p>
+
+  </section>
+
+</Layout>

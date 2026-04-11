@@ -1,0 +1,636 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import saqqara from '~/assets/images/saqqara/mission_saqqara_thumbnail.png';
+import karnakMut from '~/assets/images/Karnak/SEKHMET_Thumbnail.png';
+
+const metadata = {
+  title: 'Egypt - Travel Chronicles Studio',
+};
+
+// modal state (simple approach)
+let activeVideo = '';
+---
+
+<Layout metadata={metadata}>
+
+  <!-- HERO -->
+  <section class="relative flex items-center justify-center min-h-[60vh] text-center px-6 overflow-hidden">
+
+    <div class="absolute inset-0">
+      <img src="/Images/ValleyOfQueens/U.Nefertari_2023_14.jpg" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/50"></div>
+    </div>
+
+    <div class="relative z-10 text-white">
+      <h1 class="text-5xl md:text-6xl font-bold">Egypt</h1>
+      <p class="mt-4 text-lg opacity-90">A journey through ancient civilisation and timeless landscapes</p>
+    </div>
+
+  </section>
+
+  <!-- CONTENT SECTIONS -->
+  <section class="max-w-4xl mx-auto px-6 py-16 space-y-20">
+
+<!-- Cairo -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Cairo</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Old Cairo -->
+    <div
+      onclick="openModal('I49_eZNuCNk')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+        src="/Images/cairo/old_cairo.png"
+        class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+        alt="Old Cairo"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          Old Cairo is a historic district filled with ancient churches, mosques, and winding streets that reflect centuries of cultural and religious heritage at the heart of the city.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          Click here to read more
+        </span>
+      </div>
+    </div>
+
+<!-- Museums -->
+<div
+  onclick="openModal('6Cfo1RAbXDU')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/cairo/museums.png"
+    class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+    alt="Cairo Museums"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      Cairo’s museums preserve some of the most important artefacts in human history, offering an extraordinary journey through Egypt’s ancient civilisations and artistic legacy.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      Click here to read more
+    </span>
+  </div>
+</div>
+
+      </div>
+    </div>
+
+
+<!-- Saqqara -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Saqqara</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Mission Saqqara -->
+    <div
+      onclick="openModal('2-5zG6_yZno')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+        src={saqqara.src}
+        class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+        alt="Eleven Sites of Saqqara"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          Saqqara is one of Egypt’s most significant archaeological sites, home to the Step Pyramid of Djoser and vast ancient burial grounds that reveal the earliest chapters of pyramid construction.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          Click here to read more
+        </span>
+      </div>
+    </div>
+
+    <!-- Tomb of Irukaptah -->
+    <div
+      onclick="openModal('tsI0YmT0aek')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+       src="/Images/saqqara/irukaptah.png"
+        class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+        alt="Tomb of Irukaptah"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          A beautifully preserved tomb showcasing intricate carvings and vivid scenes of daily life, offering a more personal and intimate glimpse into ancient Egyptian history.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          Watch video
+        </span>
+      </div>
+    </div>
+<!-- Tomb of Maya -->
+<div
+  onclick="openModal('044LmIVBR7k')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/saqqara/tomb_maya.png"
+    class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+    alt="Tomb of Maya"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Tomb of Maya offers a fascinating glimpse into the life of Tutankhamun’s treasurer, with richly detailed reliefs that bring ancient Egyptian rituals and daily life vividly to life.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      Watch video
+    </span>
+  </div>
+</div>
+  </div>
+</div>
+
+<section class="max-w-4xl mx-auto px-6 py-16 space-y-20">
+
+<!-- Giza Plateau -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Giza Plateau</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Tomb of Meresankh -->
+    <div
+      onclick="openModal('_Jx3bYZ2GtE')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+        src="/Images/giza/tomb_meresankh.png"
+        class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+        alt="Tomb of Meresankh III"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          The Tomb of Meresankh III reveals beautifully preserved reliefs and offers a rare and intimate look into elite life during the Old Kingdom, just steps from the Great Pyramids.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          ▶ Watch video
+        </span>
+      </div>
+    </div>
+
+<!-- Pyramids of Khufu, Khafre and Menkaure -->
+<div
+  onclick="openModal('CuF7tTiev0M')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/giza/pyramids.png"
+    class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+    alt="Pyramids of Khufu, Khafre and Menkaure"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Great Pyramids of Khufu, Khafre, and Menkaure stand as the most iconic monuments of ancient Egypt, dominating the Giza Plateau with their monumental scale and timeless presence.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Pyramids and Sphinx -->
+<div
+  onclick="openModal('-LLb-WbM_HI')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/giza/giza_plateau_sphinx.jpg"
+    class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+    alt="Pyramids and Sphinx, Giza Plateau"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Great Pyramids and the Sphinx stand together as the ultimate symbols of ancient Egypt, representing both monumental engineering and timeless mystery on the Giza Plateau.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      Click here to read more
+    </span>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- Edfu and Esna -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Edfu and Esna</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Temple of Horus -->
+    <div
+      onclick="openModal('4WF07F47sng')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+        src="/Images/edfu_esna/temple_horus.png"
+        class="w-full aspect-[16/9] object-[center_35%] object-cover group-hover:scale-105 transition duration-700"
+        alt="Temple of Horus"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          One of Egypt’s best-preserved temples, Edfu’s Temple of Horus showcases towering pylons and detailed carvings that bring ancient rituals and mythology vividly to life.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          ▶ Watch video
+        </span>
+      </div>
+    </div>
+
+<!-- Temple of Khnum -->
+<div
+  onclick="openModal('RaWYPElj0Cw')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/edfu_esna/temple_khnum.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Temple of Khnum"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Temple of Khnum at Esna is renowned for its beautifully preserved hypostyle hall, featuring intricate carvings and vibrant colours that reveal the artistry of later Egyptian temple design.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+  </div>
+</div>
+
+    <!-- Karnak -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Karnak</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+ <!-- Precinct of Mut -->
+<div
+  onclick="openModal('oHqa8VlYUvw')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+
+ <img
+  src={karnakMut.src}
+  class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+  alt="Precinct of Mut"
+/>
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      Temple of Mut is part of the Karnak complex and was dedicated to the mother goddess of ancient Thebes.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      Click here to read more
+    </span>
+  </div>
+
+</div>
+
+<!-- Precinct of Amun-Ra -->
+<div
+  onclick="openModal('iQEr5y9PXB4')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/karnak/precinct_amun_ra.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Precinct of Amun-Ra, Karnak"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Precinct of Amun-Ra at Karnak is the largest and most significant religious complex of ancient Egypt, featuring towering columns, sacred halls, and centuries of layered construction.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Temples of Khonsu & Opet -->
+<div
+  onclick="openModal('8pxW7a5I6r4')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/karnak/temples_khonsu_opet.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Temples of Khonsu and Opet, Karnak"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Temples of Khonsu and Opet at Karnak reveal the spiritual depth of ancient Thebes, dedicated to lunar and fertility deities with beautifully preserved sanctuaries and carvings.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+  </div>
+</div>
+<!-- Luxor -->
+<div>
+  <h2 class="text-3xl font-bold mb-6">Luxor</h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Medinet Habu -->
+    <div
+      onclick="openModal('CxXoxU99INM')"
+      class="cursor-pointer group block overflow-hidden rounded-2xl"
+    >
+      <img
+        src="/Images/luxor/mortuary_temple_ramesses_3.png"
+        class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+        alt="Medinet Habu - Mortuary Temple of Ramesses III"
+      />
+
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          The Mortuary Temple of Ramesses III at Medinet Habu is one of Luxor’s most impressive and well-preserved temple complexes, known for its towering walls and vivid reliefs depicting ancient battles and rituals.
+        </p>
+
+        <span class="text-sm font-semibold underline mt-2 inline-block">
+          ▶ Watch video
+        </span>
+      </div>
+    </div>
+
+<!-- Mortuary Temple of Hatshepsut -->
+<div
+  onclick="openModal('rXChsBvHUv4')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/hatshepsut.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Mortuary Temple of Hatshepsut"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Mortuary Temple of Queen Hatshepsut rises dramatically against the cliffs of Deir el-Bahari, showcasing elegant terraces and one of the most striking architectural designs of ancient Egypt.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Tomb of Ay -->
+<div
+  onclick="openModal('GZRvD1d9MdE')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/tomb_ay.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Tomb of Ay"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Tomb of Ay, the successor of Tutankhamun, offers a quieter but beautifully detailed glimpse into the Valley of the Kings, with subtle but elegant wall carvings and historical significance.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Tomb of Ramose -->
+<div
+  onclick="openModal('nHxDGkL0AeE')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/tomb_ramose.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Tomb of Ramose"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Tomb of Ramose in the Valley of the Nobles is renowned for its exquisite artistic transition between traditional and Amarna-style reliefs, offering a rare glimpse into a pivotal moment in Egyptian history.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Luxor Temple -->
+<div
+  onclick="openModal('ZO1-65qCCwc')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/luxor_temple.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Luxor Temple"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      Luxor Temple stands at the heart of ancient Thebes, beautifully illuminated along the Nile, and connected to Karnak via the historic Avenue of Sphinxes.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Tombs of Ramesses III–IX -->
+<div
+  onclick="openModal('ODu9AIFjPeY')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/tombs_rameses_3_4_5_6_9.png"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Tombs of Ramesses III to IX"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      A remarkable cluster of tombs belonging to the later Ramesside period, showcasing detailed wall carvings, religious symbolism, and the evolving artistry of the Valley of the Kings.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Tombs of Merenptah, Siptah, Tausert, Setnakhte -->
+<div
+  onclick="openModal('wFV6mxEwvtA')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/tombs_merenptah.jpg"
+    class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
+    alt="Tombs of Merenptah, Siptah, Tausert and Setnakhte"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      A remarkable collection of royal tombs in the Valley of the Kings, belonging to late New Kingdom pharaohs and queens, each revealing unique artistic styles and burial traditions.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+<!-- Tomb of Sennefer -->
+<div
+  onclick="openModal('3sxA289zfYI')"
+  class="cursor-pointer group block overflow-hidden rounded-2xl"
+>
+  <img
+    src="/Images/luxor/sennefer.png"
+    class="w-full aspect-[16/9] object-cover object-[center_35%] group-hover:scale-105 transition duration-700"
+    alt="Tomb of Sennefer"
+  />
+
+  <div class="p-4">
+    <p class="text-sm opacity-80 leading-relaxed">
+      The Tomb of Sennefer, known as the “Tomb of the Vineyards,” is celebrated for its beautifully preserved ceiling paintings and richly decorated scenes of daily life and eternity.
+    </p>
+
+    <span class="text-sm font-semibold underline mt-2 inline-block">
+      ▶ Watch video
+    </span>
+  </div>
+</div>
+
+  </div>
+</div>
+    <!-- Aswan -->
+    <div>
+      <h2 class="text-3xl font-bold mb-4">Aswan</h2>
+      <p class="opacity-80 leading-relaxed">
+        A peaceful Nile city known for its granite quarries, temples, and beautiful river islands.
+      </p>
+    </div>
+
+    <!-- Abu Simbel -->
+    <div>
+      <h2 class="text-3xl font-bold mb-4">Abu Simbel</h2>
+      <p class="opacity-80 leading-relaxed">
+        The monumental temples of Ramses II carved directly into the mountainside near the Sudanese border.
+      </p>
+    </div>
+
+  </section>
+<!-- VIDEO MODAL -->
+<div
+  id="videoModal"
+  class="fixed inset-0 bg-black/80 hidden z-50 items-center justify-center backdrop-blur-sm"
+>
+
+  <div class="relative w-full max-w-4xl aspect-video transform transition-all duration-300 scale-95">
+
+    <!-- Close button -->
+    <button
+      onclick="closeModal()"
+      class="absolute -top-10 right-0 text-white text-2xl"
+    >
+      ✕
+    </button>
+
+    <!-- YouTube iframe -->
+    <iframe
+      id="videoFrame"
+      class="w-full h-full rounded-xl"
+      src=""
+      frameborder="0"
+      allow="autoplay; fullscreen"
+      allowfullscreen
+    ></iframe>
+
+  </div>
+
+</div>
+<script is:inline>
+window.openModal = function(videoId) {
+  const modal = document.getElementById('videoModal');
+  const frame = document.getElementById('videoFrame');
+  const inner = modal.querySelector('div');
+
+  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+
+  document.body.style.overflow = 'hidden';
+
+  requestAnimationFrame(() => {
+    inner.classList.remove('scale-95');
+    inner.classList.add('scale-100');
+  });
+};
+
+window.closeModal = function() {
+  const modal = document.getElementById('videoModal');
+  const frame = document.getElementById('videoFrame');
+  const inner = modal.querySelector('div');
+
+  // stop video completely
+  frame.src = '';
+
+  // reset animation
+  inner.classList.add('scale-95');
+  inner.classList.remove('scale-100');
+
+  // hide modal
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+
+  // allow page scrolling again (important)
+  document.body.style.overflow = 'auto';
+};
+</script>
+</Layout>

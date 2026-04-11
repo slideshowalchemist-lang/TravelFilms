@@ -1,0 +1,120 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import Hero from '~/components/widgets/Hero.astro';
+import Note from '~/components/widgets/Note.astro';
+import Features from '~/components/widgets/Features.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+import Steps from '~/components/widgets/Steps.astro';
+import Content from '~/components/widgets/Content.astro';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'Travel Chronicles Studio',
+  ignoreTitleTemplate: true,
+};
+---
+
+<Layout metadata={metadata}>
+
+  <!-- HERO SECTION -->
+  <section class="relative flex items-center justify-center min-h-[85vh] text-center px-6 overflow-hidden">
+
+  <!-- BACKGROUND IMAGE -->
+  <div class="absolute inset-0">
+    <img
+      src="/public/images/G.Giza1.jpeg"
+      alt="Travel background"
+      class="w-full h-full object-cover"
+    />
+
+    <!-- DARK OVERLAY -->
+    <div class="absolute inset-0 bg-black/50"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="relative z-10 text-white">
+    <h1 class="text-5xl md:text-7xl font-bold mb-6">
+      Travel Chronicles Studio
+    </h1>
+
+    <p class="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto">
+      Cinematic travel storytelling capturing journeys, culture, and atmosphere around the world.
+    </p>
+
+
+  </div>
+
+</section>
+
+ <!-- INTRO BANNER -->
+<section class="relative max-w-5xl mx-auto px-6 py-24 text-center">
+  
+  <!-- Optional subtle background styling -->
+  <div class="absolute inset-0 -z-10 opacity-10 bg-gradient-to-b from-black via-transparent to-black"></div>
+
+
+  <p class="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-gray-700">
+    Travel Chronicles Studio is a collection of short travel films and narrated stories capturing the places we’ve explored around the world—sharing the moments, feelings, and memories that make each destination unforgettable. Capturing special lifetime memories, one frame at a time.
+  </p>
+
+</section>
+<!-- FEATURED DESTINATIONS -->
+<section class="max-w-6xl mx-auto px-6 py-20">
+
+  <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+    Featured Destinations
+  </h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Egypt -->
+    <a href="/egypt" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
+  <img
+    src="/public/images/A1.Abu Simbel_2023_25.jpg"
+    class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+    alt="Egypt"
+  />
+  <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition"></div>
+  <div class="absolute bottom-4 left-4 text-white">
+    <h3 class="text-2xl font-bold">Egypt</h3>
+    <p class="text-sm opacity-80">Ancient wonders & desert light</p>
+  </div>
+</a>
+
+    <!-- Italy -->
+    <a href="/italy" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
+      <img
+        src="/images/italy.jpg"
+        class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+        alt="Italy"
+      />
+      <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition"></div>
+      <div class="absolute bottom-4 left-4 text-white">
+        <h3 class="text-2xl font-bold">Italy</h3>
+        <p class="text-sm opacity-80">Light, food & timeless cities</p>
+      </div>
+    </a>
+
+    <!-- Greece -->
+    <a href="/greece" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
+      <img
+        src="/images/greece.jpg"
+        class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+        alt="Greece"
+      />
+      <div class="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition"></div>
+      <div class="absolute bottom-4 left-4 text-white">
+        <h3 class="text-2xl font-bold">Greece</h3>
+        <p class="text-sm opacity-80">White villages & blue seas</p>
+      </div>
+    </a>
+
+  </div>
+
+</section>
+
+</Layout>
