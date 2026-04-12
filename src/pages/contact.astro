@@ -1,60 +1,45 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import HeroText from '~/components/widgets/HeroText.astro';
 import ContactUs from '~/components/widgets/Contact.astro';
-import Features2 from '~/components/widgets/Features2.astro';
 
 const metadata = {
   title: 'Contact',
 };
+
+const inputs = [
+  { type: 'text', name: 'name', label: 'Name' },
+  { type: 'email', name: 'email', label: 'Email' }
+];
+
+const textarea = {
+  label: 'Message'
+};
+
+const disclaimer = {
+  label: 'By submitting this contact form, you agree to our privacy policy.'
+};
 ---
 
 <Layout metadata={metadata}>
-  <!-- HeroText Widget ******************* -->
 
-  <HeroText tagline="Contact" title="<HeroText tagline="Contact" title="Work With Us" subtitle="" />" />
+<section class="relative flex items-center justify-center min-h-[50vh] overflow-hidden">
+  <div class="absolute inset-0">
+    <img
+      src="/Images/hatshepsut/temple_hatshepsut.jpg"
+      class="w-full h-full object-cover"
+      alt="Contact"
+    />
+    <div class="absolute inset-0 bg-black/40"></div>
+  </div>
+</section>
 
-  <ContactUs
-    id="form"
-    title="Drop us a message today!"
-    subtitle="For quicker answers, explore our FAQs section. You may find the solution you're looking  for right there! If not, our support team is delighted to help you."
-    inputs={[
-      {
-        type: 'text',
-        name: 'name',
-        label: 'Name',
-      },
-      {
-        type: 'email',
-        name: 'email',
-        label: 'Email',
-      },
-    ]}
-    textarea={{
-      label: 'Message',
-    }}
-    disclaimer={{
-      label:
-        'By submitting this contact form, you acknowledge and agree to the collection of your personal information.',
-    }}
-    description="Our support team typically responds within 24 business hours."
-  />
-
-  <!-- Features2 Widget ************** -->
-
- <Features2
-  title="Contact"
-  items={[
-    {
-      title: 'Email',
-      description: 'We typically respond within 24 hours.',
-      icon: 'tabler:mail',
-    },
-    {
-      title: 'Collaborations',
-      description: 'Open to travel film collaboration projects.',
-      icon: 'tabler:video',
-    },
-  ]}
+<ContactUs
+  id="form"
+  title="Drop us a message today!"
+  inputs={inputs}
+  textarea={textarea}
+  disclaimer={disclaimer}
+  description="We typically respond within 24 hours"
 />
+
 </Layout>
