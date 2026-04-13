@@ -42,69 +42,60 @@ let activeVideo = '';
         alt="Map of Egypt"
       />
 
-     <div class="absolute inset-0">
+<div class="absolute inset-0">
 
   <!-- Cairo -->
   <a href="#cairo"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-3 py-1 rounded"
+     class="map-pin"
      style="top: 23%; left: 54%;">
-    Cairo
   </a>
 
   <!-- Giza -->
   <a href="#giza"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 37%; left: 51%;">
-    Giza
   </a>
 
   <!-- Saqqara -->
   <a href="#saqqara"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 41%; left: 56%;">
-    Saqqara
   </a>
 
-  <!-- Luxor West Bank -->
+  <!-- Luxor -->
   <a href="#luxor"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 56%; left: 60%;">
-    Luxor
   </a>
 
   <!-- Karnak -->
   <a href="#karnak"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 54%; left: 62%;">
-    Karnak
   </a>
 
   <!-- Edfu -->
   <a href="#edfu"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 63%; left: 61%;">
-    Edfu
   </a>
 
   <!-- Esna -->
   <a href="#esna"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 66%; left: 62%;">
-    Esna
   </a>
 
   <!-- Aswan -->
   <a href="#aswan"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 73%; left: 63%;">
-    Aswan
   </a>
 
   <!-- Abu Simbel -->
   <a href="#abusimbel"
-     class="absolute text-sm font-semibold bg-black/60 text-white px-2 py-1 rounded"
+     class="map-pin"
      style="top: 88%; left: 55%;">
-    Abu Simbel
   </a>
 
 </div>
@@ -115,7 +106,7 @@ let activeVideo = '';
   <section class="max-w-4xl mx-auto px-6 py-16 space-y-20">
 
 <!-- Cairo -->
-<div>
+<div id="cairo">
   <h2 class="text-3xl font-bold mb-6">Cairo</h2>
 
   <div class="grid md:grid-cols-3 gap-6">
@@ -682,6 +673,52 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
   </div>
 
 </div>
+
+<style>
+.map-pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #8b5e3c; /* brown */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 0 0 rgba(139, 94, 60, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.map-pin::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  background: rgba(139, 94, 60, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 2s infinite;
+}
+
+.map-pin:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.6;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+</style>
+
 <script is:inline>
 window.openModal = function(videoId) {
   const modal = document.getElementById('videoModal');
