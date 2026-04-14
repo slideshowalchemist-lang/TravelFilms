@@ -1,105 +1,155 @@
-<!-- 🌟 HIGHLIGHTS -->
-<section class="max-w-5xl mx-auto px-6 py-12">
+---
+import Layout from '~/layouts/PageLayout.astro';
 
-  <h2 class="text-3xl font-bold mb-8">Highlights</h2>
+const metadata = {
+  title: 'Spain - Travel Chronicles Studio',
+};
+---
 
-  <div class="grid md:grid-cols-2 gap-6">
+<Layout metadata={metadata}>
 
-    <!-- Seville -->
-    <a href="#seville" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/seville.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Seville" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Seville</h3>
-        <p class="text-sm opacity-80 mt-1">
-          Moorish architecture, flamenco culture, and the stunning Alcázar.
-        </p>
-      </div>
-    </a>
+  <!-- HERO -->
+  <section class="relative flex items-center justify-center min-h-[60vh] text-center px-6 overflow-hidden">
 
-    <!-- Málaga -->
-    <a href="#malaga" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/malaga.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Málaga" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Málaga</h3>
-        <p class="text-sm opacity-80 mt-1">
-          Coastal charm, Picasso’s birthplace, and vibrant old town streets.
-        </p>
-      </div>
-    </a>
+    <div class="absolute inset-0">
+      <img 
+        src="/Images/spain/spain-hero.jpg" 
+        class="w-full h-full object-cover"
+        alt="Spain"
+      />
+      <div class="absolute inset-0 bg-black/50"></div>
+    </div>
 
-    <!-- Granada -->
-    <a href="#granada" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/granada.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Granada" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Granada</h3>
-        <p class="text-sm opacity-80 mt-1">
-          The Alhambra, mountain views, and rich Andalusian history.
-        </p>
-      </div>
-    </a>
+    <div class="relative z-10 text-white">
+      <h1 class="text-5xl md:text-6xl font-bold">Spain</h1>
+      <p class="mt-4 text-lg opacity-90">
+        A journey through Andalusian heritage, Moorish architecture, and vibrant cities
+      </p>
+    </div>
 
-    <!-- Córdoba -->
-    <a href="#cordoba" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/cordoba.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Córdoba" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Córdoba</h3>
-        <p class="text-sm opacity-80 mt-1">
-          The Mezquita, Roman bridge, and layered Islamic-Roman heritage.
-        </p>
-      </div>
-    </a>
+  </section>
 
-    <!-- Madrid -->
-    <a href="#madrid" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/madrid.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Madrid" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Madrid</h3>
-        <p class="text-sm opacity-80 mt-1">
-          Grand boulevards, world-class museums, and lively plazas.
-        </p>
-      </div>
-    </a>
+  <!-- CONTENT -->
+  <section class="max-w-4xl mx-auto px-6 py-16 space-y-20">
 
-    <!-- Barcelona -->
-    <a href="#barcelona" class="group rounded-2xl overflow-hidden shadow-lg block">
-      <div class="relative">
-        <img src="/Images/spain/barcelona.jpg"
-             class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition duration-700"
-             alt="Barcelona" />
-        <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-xl font-semibold">Barcelona</h3>
-        <p class="text-sm opacity-80 mt-1">
-          Gaudí architecture, Mediterranean energy, and Gothic Quarter charm.
-        </p>
-      </div>
-    </a>
+    <!-- ANDALUSIA OVERVIEW -->
+    <div id="andalusia">
+      <h2 class="text-3xl font-bold mb-6">Andalusia</h2>
 
-  </div>
-</section>
+      <p class="text-sm opacity-80 leading-relaxed mb-6">
+        Andalusia is the cultural heart of southern Spain, shaped by centuries of Moorish influence,
+        flamenco traditions, and stunning architecture across its historic cities.
+      </p>
+    </div>
+
+    <!-- SEVILLE -->
+    <div id="seville">
+      <h2 class="text-3xl font-bold mb-6">Seville</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/seville.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Seville is home to the Alcázar, Gothic cathedrals, and lively plazas filled with orange trees and flamenco spirit.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MALAGA -->
+    <div id="malaga">
+      <h2 class="text-3xl font-bold mb-6">Málaga</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/malaga.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Málaga blends coastal energy with history, from Picasso’s birthplace to its hilltop Alcazaba fortress.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GRANADA -->
+    <div id="granada">
+      <h2 class="text-3xl font-bold mb-6">Granada</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/granada-alhambra.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Granada is defined by the Alhambra, a masterpiece of Moorish architecture overlooking the Sierra Nevada.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CORDOBA -->
+    <div id="cordoba">
+      <h2 class="text-3xl font-bold mb-6">Córdoba</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/cordoba-mesquita.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Córdoba’s Mezquita is one of Europe’s most remarkable Islamic-Christian architectural transformations.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MADRID -->
+    <div id="madrid">
+      <h2 class="text-3xl font-bold mb-6">Madrid</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/madrid.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Madrid is Spain’s cultural capital, home to the Prado Museum, Royal Palace, and grand boulevards.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BARCELONA -->
+    <div id="barcelona">
+      <h2 class="text-3xl font-bold mb-6">Barcelona</h2>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="rounded-2xl overflow-hidden shadow-lg">
+          <img src="/Images/spain/barcelona.jpg" class="w-full aspect-[16/9] object-cover" />
+          <div class="p-4">
+            <p class="text-sm opacity-80">
+              Barcelona showcases Gaudí’s architecture, Mediterranean beaches, and the iconic Sagrada Família.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+</Layout>
