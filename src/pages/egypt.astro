@@ -652,47 +652,9 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- ✅ ADD CSS HERE -->
 <style>
+/* Map is disabled */
 .map-pin {
-  position: absolute;
-  width: 42px;              /* 3x bigger (was 14px) */
-  height: 42px;             /* 3x bigger */
-  background: #f97316;      /* orange (Tailwind orange-500) */
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.map-pin::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 84px;              /* 2x the pin size */
-  height: 84px;
-  background: rgba(249, 115, 22, 0.3); /* orange glow */
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: pulse 2s infinite;
-}
-
-.map-pin:hover {
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0.6;
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(1.6);
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
+  display: none;
 }
 </style>
 
