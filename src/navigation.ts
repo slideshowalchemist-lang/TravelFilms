@@ -15,7 +15,7 @@ export const headerData = {
       href: '/contact',
     },
     {
-      text: 'Countries',
+      text: 'Locations',
       links: [
         { text: 'Egypt', href: '/egypt' },
         { text: 'Greece', href: '/greece' },
