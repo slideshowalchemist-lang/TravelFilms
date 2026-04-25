@@ -70,3 +70,14 @@ analytics:
 
 ui:
   theme: 'system' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"
+footer:
+  socialLinks:
+    - ariaLabel: YouTube
+      icon: tabler:brand-youtube
+      href: https://youtube.com/@slideshowalchemist758
+    - ariaLabel: Instagram
+      icon: tabler:brand-instagram
+      href: https://www.instagram.com/slideshow_alchemist/
+    - ariaLabel: Email
+      icon: tabler:mail
+      href: mailto:slideshow.alchemist@gmail.com
