@@ -44,24 +44,28 @@ const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme 
     Capturing special lifetime memories, one frame at a time.
   </p>
 
-  <!-- Social Links -->
-  {
-    socialLinks?.length ? (
-      <ul class="flex justify-center gap-4 mt-10">
-        {socialLinks.map(({ ariaLabel, href, icon }) => (
-          <li>
-            <a
-              href={href}
-              aria-label={ariaLabel}
-              class="text-gray-400 hover:text-white transition duration-300"
-            >
-              {icon && <Icon name={icon} class="w-5 h-5" />}
-            </a>
-          </li>
-        ))}
-      </ul>
-    ) : null
-  }
+<!-- Social Links -->
+  <ul class="flex justify-center gap-4 mt-10">
+    <li>
+      <a href="https://youtube.com/@slideshowalchemist758" aria-label="YouTube" target="_blank" rel="noopener"
+        class="text-gray-400 hover:text-white transition duration-300">
+        <Icon name="tabler:brand-youtube" class="w-6 h-6" />
+      </a>
+    </li>
+    <li>
+      <a href="https://www.instagram.com/slideshow_alchemist/" aria-label="Instagram" target="_blank" rel="noopener"
+        class="text-gray-400 hover:text-white transition duration-300">
+        <Icon name="tabler:brand-instagram" class="w-6 h-6" />
+      </a>
+    </li>
+    <li>
+      <a href="mailto:slideshow.alchemist@gmail.com" aria-label="Email"
+        class="text-gray-400 hover:text-white transition duration-300">
+        <Icon name="tabler:mail" class="w-6 h-6" />
+      </a>
+    </li>
+  </ul>
+
 
   <!-- Closing note -->
   <p class="text-xs text-gray-500 mt-12 italic tracking-wide">
