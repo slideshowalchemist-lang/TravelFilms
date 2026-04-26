@@ -55,5 +55,84 @@ const metadata = {
       </div>
     </div>
 </section>
+<!-- VIDEO MODAL -->
+<div
+  id="videoModal"
+  class="fixed inset-0 bg-black/80 hidden z-50 items-center justify-center backdrop-blur-sm"
+>
 
+  <div class="relative w-full max-w-4xl aspect-video transform transition-all duration-300 scale-95">
+
+    <!-- Close button -->
+    <button
+      onclick="closeModal()"
+      class="absolute -top-10 right-0 text-white text-2xl"
+    >
+      ✕
+    </button>
+
+    <!-- YouTube iframe -->
+    <iframe
+      id="videoFrame"
+      class="w-full h-full rounded-xl"
+      src=""
+      frameborder="0"
+      allow="autoplay; fullscreen"
+      allowfullscreen
+    ></iframe>
+
+  </div>
+
+</div>
+
+</div>
+
+<!-- ✅ ADD CSS HERE -->
+<style>
+/* Map is disabled */
+.map-pin {
+  display: none;
+}
+</style>
+
+
+<script is:inline>
+window.openModal = function(videoId) {
+  const modal = document.getElementById('videoModal');
+  const frame = document.getElementById('videoFrame');
+  const inner = modal.querySelector('div');
+
+  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+
+  document.body.style.overflow = 'hidden';
+
+  requestAnimationFrame(() => {
+    inner.classList.remove('scale-95');
+    inner.classList.add('scale-100');
+  });
+};
+
+window.closeModal = function() {
+  const modal = document.getElementById('videoModal');
+  const frame = document.getElementById('videoFrame');
+  const inner = modal.querySelector('div');
+
+  // stop video completely
+  frame.src = '';
+
+  // reset animation
+  inner.classList.add('scale-95');
+  inner.classList.remove('scale-100');
+
+  // hide modal
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+
+  // allow page scrolling again (important)
+  document.body.style.overflow = 'auto';
+};
+</script>
 </Layout>
