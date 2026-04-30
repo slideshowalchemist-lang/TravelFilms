@@ -45,7 +45,15 @@ const { language, textDirection } = I18N;
   gtag('js', new Date());
   gtag('config', 'G-FM6XZHEZD8');
 </script>
-
+<script>
+  document.addEventListener('astro:page-load', () => {
+    if (typeof gtag === 'function') {
+      gtag('config', 'G-FM6XZHEZD8', {
+        page_path: window.location.pathname
+      });
+    }
+  });
+</script>
     <!-- Comment the line below to disable View Transitions -->
    <ClientRouter fallback="swap" />
   </head>
