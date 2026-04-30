@@ -37,10 +37,17 @@ const { language, textDirection } = I18N;
     <ApplyColorMode />
     <Metadata {...metadata} />
     <SiteVerification />
-    <Analytics />
+  <!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FM6XZHEZD8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FM6XZHEZD8');
+</script>
 
     <!-- Comment the line below to disable View Transitions -->
-    <ClientRouter fallback="swap" />
+   <ClientRouter fallback="swap" />
   </head>
 
 <body class="antialiased text-default bg-page tracking-tight">

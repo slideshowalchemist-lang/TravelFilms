@@ -1,6 +1,6 @@
 site:
   name: Travel Chronicles Studio
-  site: 'https://astrowind.vercel.app'
+  site: 'https://travelchroniclesstudio.netlify.app'
   base: '/'
   trailingSlash: false
 
@@ -66,7 +66,7 @@ apps:
 analytics:
   vendors:
     googleAnalytics:
-      id: G-FM6XZHEZD8
+      id: "G-FM6XZHEZD8"
 
 ui:
   theme: 'system' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"
