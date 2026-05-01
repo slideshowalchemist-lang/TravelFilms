@@ -9,11 +9,9 @@ import CustomStyles from '~/components/CustomStyles.astro';
 import ApplyColorMode from '~/components/common/ApplyColorMode.astro';
 import Metadata from '~/components/common/Metadata.astro';
 import SiteVerification from '~/components/common/SiteVerification.astro';
-import Analytics from '~/components/common/Analytics.astro';
 import BasicScripts from '~/components/common/BasicScripts.astro';
-import Header from '~/components/widgets/Header.astro';
 import Footer from '~/components/widgets/Footer.astro';
-import { headerData, footerData } from '~/navigation';
+import { footerData } from '~/navigation';
 
 // Comment the line below to disable View Transitions
 import { ClientRouter } from 'astro:transitions';
@@ -37,38 +35,45 @@ const { language, textDirection } = I18N;
     <ApplyColorMode />
     <Metadata {...metadata} />
     <SiteVerification />
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FM6XZHEZD8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-FM6XZHEZD8');
-</script>
-<script>
-  document.addEventListener('astro:page-load', () => {
-    if (typeof gtag === 'function') {
+
+    <!-- Google Analytics (SPA FIXED VERSION) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FM6XZHEZD8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      gtag('js', new Date());
+
+      // Disable automatic page tracking
       gtag('config', 'G-FM6XZHEZD8', {
+        send_page_view: false
+      });
+
+      // Track first page load
+      gtag('event', 'page_view', {
         page_path: window.location.pathname
       });
-    }
-  });
-</script>
-    <!-- Comment the line below to disable View Transitions -->
-   <ClientRouter fallback="swap" />
+
+      // Track Astro page navigation
+      document.addEventListener('astro:page-load', () => {
+        gtag('event', 'page_view', {
+          page_path: window.location.pathname
+        });
+      });
+    </script>
+
+    <!-- View Transitions -->
+    <ClientRouter fallback="swap" />
   </head>
 
-<body class="antialiased text-default bg-page tracking-tight">
+  <body class="antialiased text-default bg-page tracking-tight">
 
-  <!-- HEADER -->
- 
+    <!-- PAGE CONTENT -->
+    <slot />
 
-  <!-- PAGE CONTENT -->
-  <slot />
+    <!-- FOOTER -->
+    <Footer {...footerData} />
 
-  <!-- FOOTER -->
-  <Footer {...footerData} />
-
-  <BasicScripts />
-</body>
+    <BasicScripts />
+  </body>
 </html>
