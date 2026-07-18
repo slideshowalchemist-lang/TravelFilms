@@ -175,7 +175,7 @@ window.openModal = function(videoId) {
   const frame = document.getElementById('videoFrame');
   const inner = modal.querySelector('div');
 
-  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&cc_load_policy=0`;
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
