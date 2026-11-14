@@ -1,6 +1,6 @@
 site:
-  name: Travel Chronicles Studio
-  site: 'https://travelchroniclesstudio.netlify.app'
+  name: Egypt Before You Go
+  site: 'https://www.egyptbeforeyougo.com'
   base: '/'
   trailingSlash: false
 
@@ -9,14 +9,14 @@ site:
 # Default SEO metadata
 metadata:
   title:
-    default: Travel Chronicles Studio
-    template: '%s — Travel Chronicles Studio'
+    default: Egypt Before You Go
+    template: '%s — Egypt Before You Go'
   description: "Cinematic travel storytelling through film, culture, and immersive journeys."
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: Travel Chronicles Studio
+    site_name: Egypt Before You Go
     images:
       - url: '~/assets/images/default.png'
         width: 1200

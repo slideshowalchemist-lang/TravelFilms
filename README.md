@@ -1,4 +1,4 @@
-# Travel Chronicles Studio
+# Egypt Before You Go
 
 A cinematic travel film website showcasing destinations around the world.
 
