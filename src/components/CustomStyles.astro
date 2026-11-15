@@ -114,6 +114,20 @@
     background: var(--papyrus);
     border-bottom: 2px solid var(--gold) !important;
   }
+  #header .btn-gold {
+    white-space: nowrap;
+  }
+  /* Mid-size screens: tighter menu; Trip pass is already a menu item, so hide the extra button */
+  @media (min-width: 768px) and (max-width: 1100px) {
+    #header nav a,
+    #header nav button {
+      padding-left: 0.6rem;
+      padding-right: 0.6rem;
+    }
+    #header .btn-gold {
+      display: none;
+    }
+  }
   #header .dropdown-menu {
     background: var(--papyrus) !important;
     border: 1px solid var(--gold);
