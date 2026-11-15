@@ -1,8 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import SiteRow from '~/components/trip-pass/SiteRow.astro';
 import PassOffer from '~/components/trip-pass/PassOffer.astro';
-import { REGIONS } from '~/data/regions';
 import { getSites, watchUrl } from '~/lib/sites';
 
 const metadata = {
@@ -13,25 +11,8 @@ const metadata = {
 };
 
 const sites = await getSites();
-const countFor = (slug: string) => sites.filter((s) => s.data.region === slug).length;
-const samples = sites.filter((s) => s.data.free);
 
 const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
-
-// Photo for each region tile (regions without a photo yet get a plain lapis tile).
-const REGION_IMAGES: Record<string, string> = {
-  cairo: '/Images/giza/giza_plateau_sphinx.jpg',
-  'nile-north': '/Images/abydos/abydos_thumb.png',
-  'luxor-east': '/Images/karnak/karnak_2024_thumb.png',
-  'luxor-west': '/Images/luxor/hatshepsut_2024_thumb.png',
-  'abu-simbel': '/Images/abusimbel.jpg',
-};
-
-const LATEST_FILMS = [
-  { id: 'eg2pb8cqjPA', title: 'Egypt highlights', year: 2025, img: '/Images/egypthighlights/highlights_2025_thumb.png' },
-  { id: 'YzsV2lRAQac', title: 'Egypt highlights', year: 2024, img: '/Images/egypthighlights/highlights_2024_thumb.png' },
-  { id: '-RTmH0Hvgwg', title: 'Egypt highlights', year: 2023, img: '/Images/egypthighlights/highlights_2023_thumb.png' },
-];
 ---
 
 <Layout metadata={metadata}>
@@ -83,66 +64,6 @@ const LATEST_FILMS = [
       <p class="center"><a class="btn-gold" href="/trip-pass">See what's inside the trip pass</a></p>
     </section>
 
-    <!-- REGIONS -->
-    <section class="block">
-      <span class="eyebrow">{sites.length} sites · nine regions</span>
-      <h2>Where are you headed?</h2>
-      <div class="regions">
-        {
-          REGIONS.map((r) => (
-            <a class="region" href={`/trip-pass/${r.slug}`}>
-              {REGION_IMAGES[r.slug] && <img src={REGION_IMAGES[r.slug]} alt="" loading="lazy" />}
-              <span class="region__shade" />
-              <span class="region__text">
-                <span class="region__name">{r.name}</span>
-                <span class="region__count">
-                  {countFor(r.slug)} {countFor(r.slug) === 1 ? 'site' : 'sites'}
-                </span>
-              </span>
-            </a>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- FREE SAMPLES -->
-    {
-      samples.length > 0 && (
-        <section class="block">
-          <span class="eyebrow">Free samples</span>
-          <h2>Read a full card, free</h2>
-          <p class="lede">Two cards are open to everyone, so you can see exactly what the trip pass gives you.</p>
-          {samples.map((s) => (
-            <SiteRow site={s} />
-          ))}
-        </section>
-      )
-    }
-
-    <!-- LATEST FREE FILMS -->
-    <section class="block">
-      <span class="eyebrow">Free to watch</span>
-      <h2>Our latest Egypt films</h2>
-      <div class="films">
-        {
-          LATEST_FILMS.map((f) => (
-            <a class="film" href={watchUrl(f.id)} target="_blank" rel="noopener">
-              <span class="film__img">
-                <img src={f.img} alt="" loading="lazy" />
-                <span class="film__play" aria-hidden="true">
-                  ▶
-                </span>
-              </span>
-              <span class="film__title">
-                {f.title} <span>· {f.year}</span>
-              </span>
-            </a>
-          ))
-        }
-      </div>
-      <p class="center"><a class="btn-lapis" href="/egypt-films">Watch all our Egypt films</a></p>
-    </section>
-
     <!-- MEET RICK AND TRENA -->
     <section class="block about">
       <img src="/Images/AboutUs/AboutUs.jpg" alt="Rick and Trena" loading="lazy" />
@@ -163,10 +84,11 @@ const LATEST_FILMS = [
       <PassOffer siteCount={sites.length} />
     </section>
 
-    <!-- BEYOND EGYPT -->
+    <!-- MORE TO EXPLORE -->
     <section class="beyond">
-      <p>We've also filmed in 18 other countries, from Jordan to the Cook Islands.</p>
-      <a href="/beyond-egypt">Explore Beyond Egypt →</a>
+      <a href="/egypt-films">Watch our free Egypt films →</a>
+      <span aria-hidden="true">·</span>
+      <a href="/beyond-egypt">Explore Beyond Egypt, 18 more countries →</a>
     </section>
   </div>
 </Layout>
@@ -318,120 +240,6 @@ const LATEST_FILMS = [
     color: var(--ink-soft);
   }
 
-  /* Regions */
-  .regions {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .region {
-    position: relative;
-    display: block;
-    aspect-ratio: 16/10;
-    border-radius: 8px;
-    overflow: hidden;
-    background:
-      radial-gradient(circle at 80% 20%, rgba(224, 185, 77, 0.25), transparent 55%),
-      linear-gradient(135deg, var(--lapis), var(--lapis-dark));
-    border: 1px solid transparent;
-  }
-  .region:hover {
-    border-color: var(--gold);
-  }
-  @media (max-width: 820px) {
-    .regions {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (max-width: 520px) {
-    .regions {
-      grid-template-columns: 1fr;
-    }
-  }
-  .region img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s;
-  }
-  .region:hover img {
-    transform: scale(1.07);
-  }
-  .region__shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(18, 42, 64, 0.85), transparent 65%);
-  }
-  .region__text {
-    position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: 12px;
-    display: flex;
-    flex-direction: column;
-  }
-  .region__name {
-    font-family: 'Cinzel', serif;
-    font-weight: 700;
-    color: #fff;
-    font-size: 1.05rem;
-  }
-  .region__count {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--gold-bright);
-  }
-
-  /* Films */
-  .films {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 18px;
-  }
-  .film {
-    text-decoration: none;
-    color: var(--ink);
-  }
-  .film__img {
-    position: relative;
-    display: block;
-    aspect-ratio: 16/9;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid var(--gold);
-    background: var(--lapis-dark);
-  }
-  .film__img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-  }
-  .film:hover .film__img img {
-    transform: scale(1.04);
-  }
-  .film__play {
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    background: rgba(18, 42, 64, 0.8);
-    color: var(--gold-bright);
-    display: grid;
-    place-items: center;
-  }
-  .film__title {
-    display: block;
-    margin-top: 8px;
-    font-weight: 700;
-  }
-  .film__title span {
-    font-weight: 400;
-    color: var(--ink-soft);
-  }
-
   /* About */
   .about {
     display: grid;
@@ -473,6 +281,9 @@ const LATEST_FILMS = [
   }
   .beyond p {
     margin: 0;
+  }
+  .beyond span {
+    color: var(--sandstone);
   }
   .beyond a {
     color: var(--lapis);
