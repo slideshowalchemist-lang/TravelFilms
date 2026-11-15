@@ -39,7 +39,24 @@ const disclaimer = {
   inputs={inputs}
   textarea={textarea}
   disclaimer={disclaimer}
-  description="We typically respond within 24 hours. Prefer email? Write to us at egyptbeforeyougo@gmail.com"
+  description="We typically respond within 24 hours."
 />
+
+<section class="eb-email">
+  <p>Prefer email? Write to us at <a href="mailto:egyptbeforeyougo@gmail.com">egyptbeforeyougo@gmail.com</a></p>
+</section>
+
+<style>
+  .eb-email {
+    text-align: center;
+    padding: 0 24px 64px;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+  .eb-email a {
+    color: var(--lapis);
+    font-weight: 700;
+  }
+</style>
 
 </Layout>
