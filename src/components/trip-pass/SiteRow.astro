@@ -1,0 +1,37 @@
+---
+import type { Site } from '~/lib/sites';
+import { thumbUrl } from '~/lib/sites';
+import Verdict from '~/components/trip-pass/Verdict.astro';
+
+interface Props { site: Site }
+const { site } = Astro.props;
+const d = site.data;
+const thumb = d.videos[0];
+---
+<a class="site-row card" href={`/trip-pass/sites/${site.id}`}>
+  <div class="thumb">
+    {thumb ? <img src={thumbUrl(thumb.id)} alt="" loading="lazy" /> : <span class="no-footage">No footage yet</span>}
+  </div>
+  <div class="text">
+    <h3>{d.title}</h3>
+    <div class="meta">
+      <Verdict verdict={d.verdict} />
+      {d.timeNeeded && <span>{d.timeNeeded}</span>}
+      {d.free ? <span class="free">Free sample</span> : <span class="lock" title="Trip pass">🔒</span>}
+      {d.draft && <span class="draft">Draft</span>}
+    </div>
+  </div>
+</a>
+
+<style>
+  .site-row { display: flex; gap: 16px; align-items: center; text-decoration: none; color: inherit; padding: 12px; margin-top: 10px; border: 1px solid transparent; }
+  .site-row:hover { border-color: var(--gold); }
+  .thumb { flex: 0 0 128px; aspect-ratio: 16/9; border-radius: 4px; overflow: hidden; background: var(--lapis-dark); display: grid; place-items: center; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .no-footage { color: var(--papyrus-dark); font-size: 0.7rem; }
+  h3 { margin: 0 0 4px; font-size: 1rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 0.8rem; color: var(--ink-soft); }
+  .free { color: var(--sandstone); font-weight: 700; }
+  .draft { color: #a8442f; border: 1px dashed #a8442f; padding: 0 6px; border-radius: 3px; }
+  @media (max-width: 520px) { .thumb { flex-basis: 96px; } }
+</style>

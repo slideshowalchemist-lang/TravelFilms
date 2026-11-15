@@ -1,0 +1,17 @@
+---
+// The trip pass buy button. Until payments are connected (CHECKOUT_URL in src/lib/sites.ts),
+// it shows "Coming soon" instead of a button that goes nowhere.
+import { CHECKOUT_URL } from '~/lib/sites';
+---
+
+{
+  CHECKOUT_URL ? (
+    <a class="btn-gold" href={CHECKOUT_URL}>
+      Buy the trip pass
+    </a>
+  ) : (
+    <span class="btn-coming" title="Payments open soon">
+      Coming soon
+    </span>
+  )
+}

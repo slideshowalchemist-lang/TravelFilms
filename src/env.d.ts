@@ -3,3 +3,10 @@
 /// <reference types="astro/client" />
 /// <reference types="vite/client" />
 /// <reference types="../vendor/integration/types.d.ts" />
+
+declare namespace App {
+  interface Locals {
+    /** true when the visitor holds a valid, unexpired trip pass cookie */
+    hasAccess: boolean;
+  }
+}

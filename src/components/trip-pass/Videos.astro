@@ -1,0 +1,33 @@
+---
+import type { Site } from '~/lib/sites';
+import { thumbUrl, watchUrl } from '~/lib/sites';
+
+interface Props { videos: Site['data']['videos']; title: string }
+const { videos, title } = Astro.props;
+// Newest footage first.
+const sorted = [...videos].sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+---
+{sorted.length > 0 && (
+  <div class="videos">
+    {sorted.map((v) => (
+      <a class="video" href={watchUrl(v.id, v.start)} target="_blank" rel="noopener">
+        <span class="img">
+          <img src={thumbUrl(v.id)} alt={`${title} footage${v.year ? `, ${v.year}` : ''}`} loading="lazy" />
+          <span class="play" aria-hidden="true">▶</span>
+        </span>
+        <span class="caption">
+          {v.year ?? ''}{v.year && v.label ? ' · ' : ''}{v.label ?? ''}
+        </span>
+      </a>
+    ))}
+  </div>
+)}
+
+<style>
+  .videos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+  .video { text-decoration: none; color: var(--ink-soft); font-size: 0.8rem; }
+  .img { position: relative; display: block; aspect-ratio: 16/9; border: 1px solid var(--gold); border-radius: 4px; overflow: hidden; background: var(--lapis-dark); }
+  .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .play { position: absolute; inset: 0; margin: auto; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: rgba(18,42,64,0.8); color: var(--gold-bright); display: grid; place-items: center; }
+  .caption { display: block; margin-top: 4px; text-align: center; }
+</style>

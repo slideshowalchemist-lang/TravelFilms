@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 
 import { defineConfig } from 'astro/config';
 
+import netlify from '@astrojs/netlify';
 import sitemap from '@astrojs/sitemap';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
@@ -23,6 +24,13 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 
 export default defineConfig({
   output: 'static',
+  // Pages are static; only trip pass site cards render on request, to check the visitor's pass.
+  adapter: netlify(),
+
+  redirects: {
+    '/egypt': '/egypt-films',
+    '/journeys': '/beyond-egypt',
+  },
 
   integrations: [
     tailwind({

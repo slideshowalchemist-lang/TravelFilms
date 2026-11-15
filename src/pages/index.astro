@@ -1,246 +1,482 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import Note from '~/components/widgets/Note.astro';
-import Features from '~/components/widgets/Features.astro';
-import Features2 from '~/components/widgets/Features2.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import FAQs from '~/components/widgets/FAQs.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+import SiteRow from '~/components/trip-pass/SiteRow.astro';
+import PassOffer from '~/components/trip-pass/PassOffer.astro';
+import { REGIONS } from '~/data/regions';
+import { getSites, watchUrl } from '~/lib/sites';
 
 const metadata = {
   title: 'Egypt Before You Go',
   ignoreTitleTemplate: true,
+  description:
+    'Honest, first-hand verdicts and our own footage for every major site in Egypt, from a couple who keep going back.',
 };
+
+const sites = await getSites();
+const countFor = (slug: string) => sites.filter((s) => s.data.region === slug).length;
+const samples = sites.filter((s) => s.data.free);
+
+const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
+
+// Photo for each region tile (regions without a photo yet get a plain lapis tile).
+const REGION_IMAGES: Record<string, string> = {
+  cairo: '/Images/giza/giza_plateau_sphinx.jpg',
+  'nile-north': '/Images/abydos/abydos_thumb.png',
+  'luxor-east': '/Images/karnak/karnak_2024_thumb.png',
+  'luxor-west': '/Images/luxor/hatshepsut_2024_thumb.png',
+  'abu-simbel': '/Images/abusimbel.jpg',
+};
+
+const LATEST_FILMS = [
+  { id: 'eg2pb8cqjPA', title: 'Egypt highlights', year: 2025, img: '/Images/egypthighlights/highlights_2025_thumb.png' },
+  { id: 'YzsV2lRAQac', title: 'Egypt highlights', year: 2024, img: '/Images/egypthighlights/highlights_2024_thumb.png' },
+  { id: '-RTmH0Hvgwg', title: 'Egypt highlights', year: 2023, img: '/Images/egypthighlights/highlights_2023_thumb.png' },
+];
 ---
 
 <Layout metadata={metadata}>
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero__bg" src="/Images/giza1.jpeg" alt="" />
+    <div class="hero__shade"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Four visits in, we still keep going back</p>
+      <h1>See Egypt before you go</h1>
+      <p class="hero__lede">
+        Honest, first-hand verdicts and our own footage for every major site in Egypt, so your first visit feels like
+        your fourth.
+      </p>
+      <div class="hero__actions">
+        <a class="btn-gold hero__btn" href="/trip-pass">Explore the trip pass</a>
+        <a class="hero__btn hero__btn--ghost" href={watchUrl(HERO_FILM)} target="_blank" rel="noopener">▶ Watch the film</a>
+      </div>
+    </div>
+  </section>
 
-  <!-- HERO SECTION -->
-  <section class="relative flex items-center justify-center min-h-[85vh] text-center px-6 overflow-hidden">
+  <div class="home">
+    <!-- WHAT THE TRIP PASS GIVES YOU -->
+    <section class="block">
+      <span class="eyebrow">The Egypt trip pass</span>
+      <h2>Know which sites are worth your time</h2>
+      <p class="lede">
+        Egypt is a big trip, and you only get so many days there. We're not Egyptologists, just two passionate travellers
+        who've been four times. The trip pass is everything we wish we'd known before our first visit.
+      </p>
+      <div class="features">
+        <div class="feature">
+          <h3>Our honest verdict</h3>
+          <p>Unmissable, worth it, for enthusiasts, or skip it. Straight answers on every site.</p>
+        </div>
+        <div class="feature">
+          <h3>What it's really like</h3>
+          <p>The scale, the crowds, the heat, the feeling of standing there, in our own words.</p>
+        </div>
+        <div class="feature">
+          <h3>How long to allow</h3>
+          <p>Time on site, getting there and practical tips, so you can plan your days properly.</p>
+        </div>
+        <div class="feature">
+          <h3>Our own footage</h3>
+          <p>See each site in our films before you decide whether it makes your list.</p>
+        </div>
+      </div>
+      <p class="center"><a class="btn-gold" href="/trip-pass">See what's inside the trip pass</a></p>
+    </section>
 
-  <!-- BACKGROUND IMAGE -->
-<div class="absolute inset-0">
-  <img
-    src="/Images/giza1.jpeg"
-    alt="Travel background"
-    class="w-full h-full object-cover"
-    />
+    <!-- REGIONS -->
+    <section class="block">
+      <span class="eyebrow">{sites.length} sites · nine regions</span>
+      <h2>Where are you headed?</h2>
+      <div class="regions">
+        {
+          REGIONS.map((r) => (
+            <a class="region" href={`/trip-pass/${r.slug}`}>
+              {REGION_IMAGES[r.slug] && <img src={REGION_IMAGES[r.slug]} alt="" loading="lazy" />}
+              <span class="region__shade" />
+              <span class="region__text">
+                <span class="region__name">{r.name}</span>
+                <span class="region__count">
+                  {countFor(r.slug)} {countFor(r.slug) === 1 ? 'site' : 'sites'}
+                </span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
 
-    <!-- DARK OVERLAY -->
-    <div class="absolute inset-0 bg-black/50"></div>
+    <!-- FREE SAMPLES -->
+    {
+      samples.length > 0 && (
+        <section class="block">
+          <span class="eyebrow">Free samples</span>
+          <h2>Read a full card, free</h2>
+          <p class="lede">Two cards are open to everyone, so you can see exactly what the trip pass gives you.</p>
+          {samples.map((s) => (
+            <SiteRow site={s} />
+          ))}
+        </section>
+      )
+    }
+
+    <!-- LATEST FREE FILMS -->
+    <section class="block">
+      <span class="eyebrow">Free to watch</span>
+      <h2>Our latest Egypt films</h2>
+      <div class="films">
+        {
+          LATEST_FILMS.map((f) => (
+            <a class="film" href={watchUrl(f.id)} target="_blank" rel="noopener">
+              <span class="film__img">
+                <img src={f.img} alt="" loading="lazy" />
+                <span class="film__play" aria-hidden="true">
+                  ▶
+                </span>
+              </span>
+              <span class="film__title">
+                {f.title} <span>· {f.year}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="center"><a class="btn-lapis" href="/egypt-films">Watch all our Egypt films</a></p>
+    </section>
+
+    <!-- MEET RICK AND TRENA -->
+    <section class="block about">
+      <img src="/Images/AboutUs/AboutUs.jpg" alt="Rick and Trena" loading="lazy" />
+      <div>
+        <span class="eyebrow">Who we are</span>
+        <h2>Rick and Trena</h2>
+        <p>
+          We're not Egyptologists. We're a husband and wife team who fell for Egypt on our first visit and keep going back,
+          cameras in hand. We see these sites the way you will: with genuine awe, and one question front of mind. Is
+          this worth our time?
+        </p>
+        <a href="/about">More about us →</a>
+      </div>
+    </section>
+
+    <!-- THE OFFER -->
+    <section class="block">
+      <PassOffer siteCount={sites.length} />
+    </section>
+
+    <!-- BEYOND EGYPT -->
+    <section class="beyond">
+      <p>We've also filmed in 18 other countries, from Jordan to the Cook Islands.</p>
+      <a href="/beyond-egypt">Explore Beyond Egypt →</a>
+    </section>
   </div>
-
-  <!-- CONTENT -->
-  <div class="relative z-10 text-white">
-    <h1 class="text-5xl md:text-7xl font-bold mb-6">
-      Egypt Before You Go
-    </h1>
-
-    <p class="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto">
-      Cinematic travel storytelling capturing journeys, culture, and atmosphere around the world.
-    </p>
-
-
-  </div>
-
-</section>
-
- <!-- INTRO BANNER -->
-<section class="relative max-w-5xl mx-auto px-6 py-24 text-center">
-  
-  <!-- Optional subtle background styling -->
-  <div class="absolute inset-0 -z-10 opacity-10 bg-gradient-to-b from-black via-transparent to-black"></div>
-
-
-  <p class="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-gray-700">
-    Egypt Before You Go is a collection of short travel films and narrated stories capturing the places we’ve explored around the world—sharing the moments, feelings, and memories that make each destination unforgettable. Capturing special lifetime memories, one frame at a time.
-  </p>
-
-</section>
-<!-- FEATURED DESTINATIONS -->
-<section class="max-w-6xl mx-auto px-6 py-20">
-
-  <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-    Featured Destinations
-  </h2>
-
-  <div class="grid md:grid-cols-3 gap-6">
-
-  <!-- Egypt -->
-  <a href="/egypt" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/abusimbel.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Egypt</h3>
-    </div>
-  </a>
-
-  <!-- Sicily -->
-  <a href="/sicily" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-  <img src="/Images/sicily/sicily.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Sicily</h3>
-    </div>
-  </a>
-
-  <!-- Spain -->
-  <a href="/spain" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/spain/spain.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Spain</h3>
-    </div>
-  </a>
-
-  <!-- Malta -->
-  <a href="/malta" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/malta/malta_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Malta</h3>
-    </div>
-  </a>
-
-  <!-- Italy -->
-  <a href="/italy" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/italy/italy_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Italy</h3>
-    </div>
-  </a>
-
-  <!-- Croatia -->
-  <a href="/croatia" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/croatia/croatia_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Croatia</h3>
-    </div>
-  </a>
-
-  <!-- Portugal -->
-  <a href="/portugal" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/portugal/portugal_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Portugal</h3>
-    </div>
-  </a>
-
-  <!-- Switzerland -->
-  <a href="/switzerland" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/switzerland/switzerland_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Switzerland</h3>
-    </div>
-  </a>
-
-  <!-- Australia -->
-  <a href="/australia" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/australia/australia_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Australia</h3>
-    </div>
-  </a>
-
-  <!-- France -->
-  <a href="/france" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/france/france_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">France</h3>
-    </div>
-  </a>
-
-  <!-- Morocco -->
-  <a href="/morocco" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/morocco/morocco_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Morocco</h3>
-    </div>
-  </a>
-
-  <!-- Cook Islands -->
-  <a href="/cookislands" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/cookislands/cook_island_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Cook Islands</h3>
-    </div>
-  </a>
-
-  <!-- Qatar -->
-  <a href="/qatar" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/qatar/qatar_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Qatar</h3>
-    </div>
-  </a>
-
-  <!-- UAE -->
-  <a href="/uae" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/uae/uae_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">UAE</h3>
-    </div>
-  </a>
-
-  <!-- Greece -->
-  <a href="/greece" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/greece/santorini_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Greece</h3>
-    </div>
-  </a>
-
- <!-- Jordan -->
-  <a href="/jordan" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/jordan/jordan_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Jordan</h3>
-    </div>
-  </a>
-
- <!-- England -->
-  <a href="/england" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/england/england_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">England</h3>
-    </div>
-  </a>
-
- <!-- Netherlands -->
-  <a href="/netherlands" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/netherlands/netherlands_thumb.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Netherlands</h3>
-    </div>
-  </a>
-
-   <!-- USA -->
-  <a href="/usa" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/usa/usa_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">USA</h3>
-    </div>
-  </a>
-
-</div>
 </Layout>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 82vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    overflow: hidden;
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(18, 42, 64, 0.55), rgba(18, 42, 64, 0.75));
+  }
+  .hero__content {
+    position: relative;
+    max-width: 760px;
+    color: #fff;
+  }
+  .hero__eyebrow {
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--gold-bright);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    margin: 0 0 18px;
+  }
+  .hero__lede {
+    font-size: 1.2rem;
+    opacity: 0.92;
+    margin: 0 auto 30px;
+    max-width: 620px;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .hero__btn {
+    padding: 12px 26px;
+    font-size: 1rem;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .hero__btn--ghost {
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+  .hero__btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Page body */
+  .home {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 64px 24px 72px;
+    color: var(--ink);
+  }
+  .block {
+    margin-bottom: 80px;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--sandstone);
+  }
+  .home h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--lapis);
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    margin: 4px 0 14px;
+  }
+  .home h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--lapis);
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+  }
+  .lede {
+    max-width: 700px;
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .center {
+    text-align: center;
+    margin-top: 28px;
+  }
+  .center .btn-gold,
+  .center .btn-lapis {
+    padding: 11px 24px;
+    font-size: 0.95rem;
+  }
+  .btn-lapis {
+    display: inline-block;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    background: var(--lapis);
+    color: var(--papyrus);
+  }
+  .btn-lapis:hover {
+    background: var(--lapis-dark);
+  }
+
+  /* Features */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .feature {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    border-top: 3px solid var(--gold);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+  .feature p {
+    margin: 0;
+    font-size: 0.93rem;
+    color: var(--ink-soft);
+  }
+
+  /* Regions */
+  .regions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .region {
+    position: relative;
+    display: block;
+    aspect-ratio: 16/10;
+    border-radius: 8px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(224, 185, 77, 0.25), transparent 55%),
+      linear-gradient(135deg, var(--lapis), var(--lapis-dark));
+    border: 1px solid transparent;
+  }
+  .region:hover {
+    border-color: var(--gold);
+  }
+  @media (max-width: 820px) {
+    .regions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 520px) {
+    .regions {
+      grid-template-columns: 1fr;
+    }
+  }
+  .region img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s;
+  }
+  .region:hover img {
+    transform: scale(1.07);
+  }
+  .region__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(18, 42, 64, 0.85), transparent 65%);
+  }
+  .region__text {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .region__name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: #fff;
+    font-size: 1.05rem;
+  }
+  .region__count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+  }
+
+  /* Films */
+  .films {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .film {
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .film__img {
+    position: relative;
+    display: block;
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--gold);
+    background: var(--lapis-dark);
+  }
+  .film__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .film:hover .film__img img {
+    transform: scale(1.04);
+  }
+  .film__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(18, 42, 64, 0.8);
+    color: var(--gold-bright);
+    display: grid;
+    place-items: center;
+  }
+  .film__title {
+    display: block;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+  .film__title span {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+
+  /* About */
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 32px;
+    align-items: center;
+  }
+  .about img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+  }
+  .about p {
+    color: var(--ink-soft);
+  }
+  .about a {
+    color: var(--lapis);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  @media (max-width: 720px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Beyond Egypt strip */
+  .beyond {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+    padding: 20px;
+    border-top: 1px solid var(--papyrus-dark);
+    border-bottom: 1px solid var(--papyrus-dark);
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .beyond p {
+    margin: 0;
+  }
+  .beyond a {
+    color: var(--lapis);
+    font-weight: 700;
+    text-decoration: none;
+  }
+</style>
