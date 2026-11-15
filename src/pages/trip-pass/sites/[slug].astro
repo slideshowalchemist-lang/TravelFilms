@@ -21,7 +21,7 @@ const { Content } = unlocked ? await render(site) : { Content: null };
 Astro.response.headers.set('Cache-Control', unlocked && !d.free ? 'private, no-store' : 'public, max-age=300');
 ---
 
-<Layout title={d.title} description={d.summary}>
+<Layout tripPass title={d.title} description={d.summary}>
   <a class="back" href={`/trip-pass/${region.slug}`}>← {region.name}</a>
   {d.group && <span class="eyebrow group">{d.group}</span>}
   <h1>{d.title}</h1>

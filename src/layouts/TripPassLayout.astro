@@ -2,22 +2,27 @@
 // Shared wrapper for the trip pass pages and other Egypt-guide-style pages.
 // Uses the normal site header and footer, plus the guide's card styles inside.
 import PageLayout from '~/layouts/PageLayout.astro';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
 export interface Props {
   title: string;
   description?: string;
   /** Wide pages (e.g. film grids) get more room */
   wide?: boolean;
+  /** Part of the trip pass (hidden from Google while the pass is "coming soon") */
+  tripPass?: boolean;
 }
 
 const {
   title,
   description = 'Honest, first-hand verdicts and real footage for every major site in Egypt.',
   wide = false,
+  tripPass = false,
 } = Astro.props;
+const robots = tripPass && !TRIP_PASS_OPEN ? { index: false, follow: false } : undefined;
 ---
 
-<PageLayout metadata={{ title, description }}>
+<PageLayout metadata={{ title, description, robots }}>
   <div class:list={['tp', { 'tp--wide': wide }]}>
     <slot />
   </div>

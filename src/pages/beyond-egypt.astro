@@ -2,6 +2,7 @@
 import Layout from '~/layouts/TripPassLayout.astro';
 import { JOURNEYS } from '~/data/journeys';
 import { thumbUrl, watchUrl } from '~/lib/sites';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
 // Country pages (photo tiles), A–Z. Images are the ones the old home page used.
 const COUNTRY_PAGES = [
@@ -83,7 +84,10 @@ const anchor = (name: string) => name.toLowerCase().replace(/\s+/g, '-');
     ))
   }
 
-  <p class="back card">Planning Egypt? <a href="/trip-pass">See the Egypt trip pass →</a></p>
+  <p class="back card">
+    Planning Egypt?{' '}
+    {TRIP_PASS_OPEN ? <a href="/trip-pass">See the Egypt trip pass →</a> : <a href="/egypt-films">Watch our Egypt films →</a>}
+  </p>
 </Layout>
 
 <style>

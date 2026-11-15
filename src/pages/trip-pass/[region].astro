@@ -13,7 +13,7 @@ const sites = (await getSites()).filter((s) => s.data.region === region.slug);
 const groups = groupSites(sites);
 ---
 
-<Layout title={region.name} description={region.blurb}>
+<Layout tripPass title={region.name} description={region.blurb}>
   <a class="back" href="/trip-pass">← All regions</a>
   <span class="eyebrow region-eyebrow">Trip pass · Region</span>
   <h1>{region.name}</h1>

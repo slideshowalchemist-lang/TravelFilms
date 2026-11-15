@@ -12,6 +12,7 @@ import type { CallToAction } from '~/types';
 interface Link {
   text?: string;
   href?: string;
+  badge?: string;
   ariaLabel?: string;
   icon?: string;
 }
@@ -86,7 +87,7 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
         class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[0.9375rem] tracking-[0.01rem] font-medium md:justify-center"
       >
         {
-          links.map(({ text, href, links }) => (
+          links.map(({ text, href, links, badge }) => (
             <li class={links?.length ? 'dropdown' : ''}>
               {links?.length ? (
                 <>
@@ -113,6 +114,11 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
                     ))}
                   </ul>
                 </>
+              ) : !href ? (
+                <span class="px-4 py-3 flex items-center whitespace-nowrap cursor-default eb-soon" aria-disabled="true">
+                  {text}
+                  {badge && <span class="eb-soon__badge">{badge}</span>}
+                </span>
               ) : (
                 <a
                   class:list={[
@@ -167,6 +173,20 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
 </header>
 
 <style>
+.eb-soon {
+  color: var(--ink-soft);
+}
+.eb-soon__badge {
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--papyrus-dark);
+  color: var(--sandstone);
+  border: 1px dashed var(--sandstone);
+}
 /* Show dropdown on hover */
 .dropdown:hover .dropdown-menu {
   display: grid;

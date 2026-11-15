@@ -2,6 +2,7 @@
 import Layout from '~/layouts/PageLayout.astro';
 import PassOffer from '~/components/trip-pass/PassOffer.astro';
 import { getSites, watchUrl } from '~/lib/sites';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
 const metadata = {
   title: 'Egypt Before You Go',
@@ -28,9 +29,16 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
         your fourth.
       </p>
       <div class="hero__actions">
-        <a class="btn-gold hero__btn" href="/trip-pass">Explore the trip pass</a>
+        {
+          TRIP_PASS_OPEN ? (
+            <a class="btn-gold hero__btn" href="/trip-pass">Explore the trip pass</a>
+          ) : (
+            <a class="btn-gold hero__btn" href="/egypt-films">Watch our Egypt films</a>
+          )
+        }
         <a class="hero__btn hero__btn--ghost" href={watchUrl(HERO_FILM)} target="_blank" rel="noopener">▶ Watch the film</a>
       </div>
+      {!TRIP_PASS_OPEN && <p class="hero__soon">The Egypt trip pass is coming soon</p>}
     </div>
   </section>
 
@@ -61,7 +69,15 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
           <p>See each site in our films before you decide whether it makes your list.</p>
         </div>
       </div>
-      <p class="center"><a class="btn-gold" href="/trip-pass">See what's inside the trip pass</a></p>
+      <p class="center">
+        {
+          TRIP_PASS_OPEN ? (
+            <a class="btn-gold" href="/trip-pass">See what's inside the trip pass</a>
+          ) : (
+            <span class="btn-coming">Coming soon</span>
+          )
+        }
+      </p>
     </section>
 
     <!-- MEET RICK AND TRENA -->
@@ -148,6 +164,17 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
     flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
+  }
+  .hero__soon {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 6px 16px;
+    border: 1px dashed var(--gold-bright);
+    border-radius: 999px;
+    color: var(--gold-bright);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
   }
   .hero__btn {
     padding: 12px 26px;
@@ -249,9 +276,12 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
   }
   .about img {
     width: 100%;
+    max-width: 380px;
+    justify-self: center;
     border-radius: 8px;
     object-fit: cover;
-    aspect-ratio: 4/3;
+    object-position: center 78%;
+    aspect-ratio: 4/5;
   }
   .about p {
     color: var(--ink-soft);

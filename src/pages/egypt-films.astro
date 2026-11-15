@@ -3,6 +3,8 @@ import Layout from '~/layouts/PageLayout.astro';
 import saqqara from '~/assets/images/saqqara/mission_saqqara_thumbnail.png';
 import karnakMut from '~/assets/images/Karnak/SEKHMET_Thumbnail.png';
 
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
+
 const metadata = {
   title: 'Egypt films',
   description: 'Free to watch: our films of Egypt\'s temples, tombs and the Nile, from four visits.',
@@ -34,8 +36,19 @@ let activeVideo = '';
 
   <section class="max-w-4xl mx-auto px-6 pt-8">
     <div class="eb-promo">
-      <p>Watching is free. When you're ready to plan, the trip pass gives you our honest verdict on every site in these films: what it's like to be there, whether it's worth your time, and how long to allow.</p>
-      <a class="btn-gold" href="/trip-pass">See the trip pass</a>
+      {
+        TRIP_PASS_OPEN ? (
+          <>
+            <p>Watching is free. When you're ready to plan, the trip pass gives you our honest verdict on every site in these films: what it's like to be there, whether it's worth your time, and how long to allow.</p>
+            <a class="btn-gold" href="/trip-pass">See the trip pass</a>
+          </>
+        ) : (
+          <>
+            <p>Watching is free. Coming soon: the Egypt trip pass, with our honest verdict on every site in these films, what it's like to be there, whether it's worth your time, and how long to allow.</p>
+            <span class="eb-soon-pill">Trip pass coming soon</span>
+          </>
+        )
+      }
     </div>
   </section>
 
@@ -76,6 +89,33 @@ let activeVideo = '';
 
 <!-- Aswan -->
 <a href="#aswan" class="map-pin" style="top: 65.2%; left: 61.3%;"></a>
+
+<!-- Lake Nasser -->
+
+<div id="lake-nasser">
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Lake Nasser</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/lake-nasser">Read our verdicts →</a>}</div>
+
+  <p class="text-sm opacity-80 leading-relaxed mb-6">
+    Relocated Nubian temples that can only be reached by cruising Lake Nasser, from Kalabsha near Aswan south to Abu Simbel.
+    We sailed it in October 2026 and our films are in the edit.
+  </p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <!-- To add a film, copy a card from another section (e.g. Abu Simbel below), change the
+         openModal('VIDEO_ID'), the thumbnail image and the text, then delete this placeholder card. -->
+    <div class="eb-coming-card rounded-2xl">
+      <div class="eb-coming-card__img aspect-[16/9]">
+        <span>Films coming soon</span>
+      </div>
+      <div class="p-4">
+        <p class="text-sm opacity-80 leading-relaxed">
+          <span class="font-semibold text-base block mb-1">Lake Nasser cruise</span>
+          Kalabsha, Wadi es-Sebua, Amada, Qasr Ibrim and the approach to Abu Simbel by water [2026].
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Abu Simbel -->
 <a href="#abusimbel" class="map-pin" style="top: 75.2%; left: 48.2%;"></a>
@@ -223,7 +263,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Cairo -->
 <section id="cairo" class="max-w-4xl mx-auto px-6 pt-3 pb-0">
 
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Cairo</h2><a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Cairo</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -278,7 +318,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Saqqara -->
 <section id="saqqara" class="max-w-4xl mx-auto px-6 py-2">
 
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Saqqara</h2><a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Saqqara</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -354,7 +394,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Giza Plateau -->
 <div id="giza">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Giza Plateau</h2><a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Giza Plateau</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/cairo">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -451,7 +491,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Edfu and Esna -->
 <div id="edfu">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Edfu and Esna</h2><a class="eb-verdict-link" href="/trip-pass/nile-south">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Edfu and Esna</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/nile-south">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -507,7 +547,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
    <!-- Temple of Horus 2023 -->
     <div
-      onclick="openModal('/t8iwr5B9C2E')"
+      onclick="openModal('t8iwr5B9C2E')"
       class="cursor-pointer group block overflow-hidden rounded-2xl"
     >
       <!-- IMAGE WRAPPER -->
@@ -535,7 +575,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
     <!-- Karnak -->
 <div id="karnak">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Karnak</h2><a class="eb-verdict-link" href="/trip-pass/luxor-east">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Karnak</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-east">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -657,7 +697,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Medinet Habu and Ramesseum-->
   <div id="Medinet Habu">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Medinet Habu and Ramesseum</h2><a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Medinet Habu and Ramesseum</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6"> 
 
@@ -732,13 +772,13 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Philae and Kom Ombo-->
   
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Philae and Kom Ombo</h2><a class="eb-verdict-link" href="/trip-pass/aswan">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Philae and Kom Ombo</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/aswan">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6"> 
 
     <!-- Philae and Kom Ombo Temples -->
     <div
-      onclick="openModal('/0BcK07IXWD8')"
+      onclick="openModal('0BcK07IXWD8')"
       class="cursor-pointer group block overflow-hidden rounded-2xl"
     >
       <img
@@ -769,7 +809,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
     <!-- Felucca on the Nile -->
     <div
-      onclick="openModal('/hsjufM7Ws1I')"
+      onclick="openModal('hsjufM7Ws1I')"
       class="cursor-pointer group block overflow-hidden rounded-2xl"
     >
       <img
@@ -795,7 +835,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Valleys of the Kings and Queens-->
 
 <div id="Valley of the Kings">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Valleys of the Kings and Queens</h2><a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Valleys of the Kings and Queens</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -845,7 +885,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Tomb of Nefertari-->
 <div
-  onclick="openModal('/nW_ZfRT-G4w')"
+  onclick="openModal('nW_ZfRT-G4w')"
   class="cursor-pointer group block overflow-hidden rounded-2xl"
 >
   <img
@@ -916,7 +956,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Valley of the Nobels -->
 
 <div id="Valley of the Nobels">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Tombs of the Nobles</h2><a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Tombs of the Nobles</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -969,7 +1009,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Mortuary Temple of Hatshepsut -->
 
 <div id="mortuary temple of hatshepsut">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Deir el-Bahari</h2><a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Deir el-Bahari</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-west">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -1045,7 +1085,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Luxor Temple -->
 
 <div id="luxor temple">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Luxor Temple</h2><a class="eb-verdict-link" href="/trip-pass/luxor-east">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Luxor Temple</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/luxor-east">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -1098,7 +1138,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Dendera and Abydos-->
 
 <div id="dendera">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Dendera and Abydos</h2><a class="eb-verdict-link" href="/trip-pass/nile-north">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Dendera and Abydos</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/nile-north">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 
@@ -1126,7 +1166,7 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 
 <!-- Tomb of Seti I -->
 <div
-  onclic<k="openModal('xfUmv62dJyY')"
+  onclick="openModal('xfUmv62dJyY')"
   class="cursor-pointer group block overflow-hidden rounded-2xl"
 >
   <img
@@ -1152,12 +1192,12 @@ class="w-full aspect-[16/9] object-cover group-hover:scale-105 transition durati
 <!-- Abu Simbel -->
 
 <div id="abusimbel">
-  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Abu Simbel</h2><a class="eb-verdict-link" href="/trip-pass/abu-simbel">Read our verdicts →</a></div>
+  <div class="eb-sec-head"><h2 class="text-2xl font-bold">Abu Simbel</h2>{TRIP_PASS_OPEN && <a class="eb-verdict-link" href="/trip-pass/abu-simbel">Read our verdicts →</a>}</div>
 
   <div class="grid md:grid-cols-3 gap-6">
 <!-- Temples for Ramesses II and Queen Nefertari -->
 <div
-  onclick="openModal('/0HtyYxorMac')"
+  onclick="openModal('0HtyYxorMac')"
   class="cursor-pointer group block overflow-hidden rounded-2xl"
 >
   <img
@@ -1290,6 +1330,34 @@ window.closeModal = function() {
     justify-content: space-between;
     gap: 4px 16px;
     margin-bottom: 1.5rem;
+  }
+  .eb-soon-pill {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: var(--papyrus-dark);
+    color: var(--sandstone);
+    border: 1px dashed var(--sandstone);
+    white-space: nowrap;
+  }
+  .eb-coming-card {
+    overflow: hidden;
+  }
+  .eb-coming-card__img {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 80% 20%, rgba(224, 185, 77, 0.25), transparent 55%),
+      linear-gradient(135deg, var(--lapis), var(--lapis-dark));
+    border-radius: 1rem;
+  }
+  .eb-coming-card__img span {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
   }
   .eb-verdict-link {
     font-size: 0.85rem;

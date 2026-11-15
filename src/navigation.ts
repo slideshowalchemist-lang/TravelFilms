@@ -1,9 +1,11 @@
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
+
 
 export const headerData = {
   links: [
     { text: 'Home', href: '/' },
     { text: 'Egypt films', href: '/egypt-films' },
-    { text: 'Trip pass', href: '/trip-pass' },
+    TRIP_PASS_OPEN ? { text: 'Trip pass', href: '/trip-pass' } : { text: 'Trip pass', badge: 'Coming soon' },
     {
       text: 'Beyond Egypt',
       links: [
@@ -31,7 +33,7 @@ export const headerData = {
     { text: 'About', href: '/about' },
     { text: 'Contact', href: '/contact' },
   ],
-  actions: [{ text: 'Get the trip pass', href: '/trip-pass', class: 'btn-gold' }],
+  actions: TRIP_PASS_OPEN ? [{ text: 'Get the trip pass', href: '/trip-pass', class: 'btn-gold' }] : [],
 };
 
 export const footerData = {
