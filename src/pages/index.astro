@@ -1,7 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import PassOffer from '~/components/trip-pass/PassOffer.astro';
-import { getSites, watchUrl } from '~/lib/sites';
+import HomeSection from '~/components/HomeSection.astro';
 import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
 const metadata = {
@@ -10,10 +9,6 @@ const metadata = {
   description:
     'Honest, first-hand verdicts and our own footage for every major site in Egypt, from a couple who keep going back.',
 };
-
-const sites = await getSites();
-
-const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
 ---
 
 <Layout metadata={metadata}>
@@ -28,84 +23,57 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
         Honest, first-hand verdicts and our own footage for every major site in Egypt, so your first visit feels like
         your fourth.
       </p>
-      <div class="hero__actions">
-        {
-          TRIP_PASS_OPEN ? (
-            <a class="btn-gold hero__btn" href="/trip-pass">Explore the trip pass</a>
-          ) : (
-            <a class="btn-gold hero__btn" href="/egypt-films">Watch our Egypt films</a>
-          )
-        }
-        <a class="hero__btn hero__btn--ghost" href={watchUrl(HERO_FILM)} target="_blank" rel="noopener">▶ Watch the film</a>
-      </div>
-      {!TRIP_PASS_OPEN && <p class="hero__soon">The Egypt trip pass is coming soon</p>}
     </div>
   </section>
 
   <div class="home">
-    <!-- WHAT THE TRIP PASS GIVES YOU -->
-    <section class="block">
-      <span class="eyebrow">The Egypt trip pass</span>
-      <h2>Know which sites are worth your time</h2>
-      <p class="lede">
-        Egypt is a big trip, and you only get so many days there. We're not Egyptologists, just two passionate travellers
-        who've been four times. The trip pass is everything we wish we'd known before our first visit.
-      </p>
-      <div class="features">
-        <div class="feature">
-          <h3>Our honest verdict</h3>
-          <p>Unmissable, worth it, for enthusiasts, or skip it. Straight answers on every site.</p>
-        </div>
-        <div class="feature">
-          <h3>What it's really like</h3>
-          <p>The scale, the crowds, the heat, the feeling of standing there, in our own words.</p>
-        </div>
-        <div class="feature">
-          <h3>How long to allow</h3>
-          <p>Time on site, getting there and practical tips, so you can plan your days properly.</p>
-        </div>
-        <div class="feature">
-          <h3>Our own footage</h3>
-          <p>See each site in our films before you decide whether it makes your list.</p>
-        </div>
-      </div>
-      <p class="center">
-        {
-          TRIP_PASS_OPEN ? (
-            <a class="btn-gold" href="/trip-pass">See what's inside the trip pass</a>
-          ) : (
-            <span class="btn-coming">Coming soon</span>
-          )
-        }
-      </p>
-    </section>
+    <!-- TRIP PASS -->
+    <HomeSection
+      eyebrow="The Egypt trip pass"
+      title="Know which sites are worth your time"
+      action={TRIP_PASS_OPEN ? { text: "See what's inside", href: '/trip-pass' } : { text: 'Coming soon' }}
+      cards={[
+        { title: 'Our honest verdict', text: 'Unmissable, worth it, for enthusiasts, or skip it. Straight answers on every site.' },
+        { title: "What it's really like", text: 'The scale, the crowds, the heat, the feeling of standing there, in our own words.' },
+        { title: 'How long to allow', text: 'Time on site, getting there and practical tips, so you can plan your days properly.' },
+        { title: 'Our own footage', text: 'See each site in our films before you decide whether it makes your list.' },
+      ]}
+    >
+      Egypt is a big trip, and you only get so many days there. We're not Egyptologists, just two passionate travellers
+      who've been four times. The trip pass is everything we wish we'd known before our first visit.
+    </HomeSection>
 
-    <!-- MEET RICK AND TRENA -->
-    <section class="block about">
-      <img src="/Images/AboutUs/AboutUs.jpg" alt="Rick and Trena" loading="lazy" />
-      <div>
-        <span class="eyebrow">Who we are</span>
-        <h2>Rick and Trena</h2>
-        <p>
-          We're not Egyptologists. We're a husband and wife team who fell for Egypt on our first visit and keep going back,
-          cameras in hand. We see these sites the way you will: with genuine awe, and one question front of mind. Is
-          this worth our time?
-        </p>
-        <a href="/about">More about us →</a>
-      </div>
-    </section>
+    <!-- EGYPT FILMS -->
+    <HomeSection
+      eyebrow="Egypt films"
+      title="Watch Egypt before you go"
+      action={{ text: 'Watch our films', href: '/egypt-films' }}
+      cards={[
+        { title: 'The pyramids and Saqqara', text: 'Giza, the Sphinx and the tombs of Saqqara, up close.', href: '/egypt-films#giza' },
+        { title: "Luxor's temples and tombs", text: 'Karnak, Luxor Temple and the Valleys of the Kings and Queens.', href: '/egypt-films#karnak' },
+        { title: 'Along the Nile', text: 'Edfu, Esna, Kom Ombo, Philae and life on the river.', href: '/egypt-films#edfu' },
+        { title: 'Our highlights films', text: 'The best of each trip, from Cairo to Abu Simbel, 2023 to 2025.', href: '/egypt-films#highlights' },
+      ]}
+    >
+      Free to watch. Our films from four visits to Egypt, shot and edited by us and grouped by region, from the pyramids
+      of Giza to the temples of Abu Simbel. See the places for yourself before you decide where to spend your days.
+    </HomeSection>
 
-    <!-- THE OFFER -->
-    <section class="block">
-      <PassOffer siteCount={sites.length} />
-    </section>
-
-    <!-- MORE TO EXPLORE -->
-    <section class="beyond">
-      <a href="/egypt-films">Watch our free Egypt films →</a>
-      <span aria-hidden="true">·</span>
-      <a href="/beyond-egypt">Explore Beyond Egypt, 18 more countries →</a>
-    </section>
+    <!-- BEYOND EGYPT -->
+    <HomeSection
+      eyebrow="Beyond Egypt"
+      title="Our other journeys"
+      action={{ text: 'Explore Beyond Egypt', href: '/beyond-egypt' }}
+      cards={[
+        { title: 'Europe', text: 'Italy, Sicily, Greece, Spain, Portugal, Malta, Croatia, France, Switzerland, the Netherlands and England.', href: '/beyond-egypt' },
+        { title: 'Middle East and North Africa', text: 'Petra in Jordan, Morocco, Qatar and the United Arab Emirates.', href: '/beyond-egypt' },
+        { title: 'Australia and the Pacific', text: 'Our home coast in Australia, and the island of Rarotonga in the Cook Islands.', href: '/beyond-egypt' },
+        { title: 'The Americas', text: 'Our travels in the USA.', href: '/beyond-egypt' },
+      ]}
+    >
+      Egypt is where our hearts are, but it isn't the only place we've pointed a camera. Beyond Egypt has our travel films
+      from 18 other countries, with a page for each one, so you can pick a country and dive straight in.
+    </HomeSection>
   </div>
 </Layout>
 
@@ -113,7 +81,7 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
   /* Hero */
   .hero {
     position: relative;
-    min-height: 82vh;
+    min-height: 72vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,168 +124,15 @@ const HERO_FILM = 'eg2pb8cqjPA'; // "Temples of Light and Silence" (2025)
   .hero__lede {
     font-size: 1.2rem;
     opacity: 0.92;
-    margin: 0 auto 30px;
+    margin: 0 auto;
     max-width: 620px;
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-  }
-  .hero__soon {
-    display: inline-block;
-    margin-top: 22px;
-    padding: 6px 16px;
-    border: 1px dashed var(--gold-bright);
-    border-radius: 999px;
-    color: var(--gold-bright);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-  .hero__btn {
-    padding: 12px 26px;
-    font-size: 1rem;
-    border-radius: 999px;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .hero__btn--ghost {
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-  }
-  .hero__btn--ghost:hover {
-    background: rgba(255, 255, 255, 0.12);
   }
 
   /* Page body */
   .home {
     max-width: 1080px;
     margin: 0 auto;
-    padding: 64px 24px 72px;
+    padding: 64px 24px 16px;
     color: var(--ink);
-  }
-  .block {
-    margin-bottom: 80px;
-  }
-  .eyebrow {
-    display: inline-block;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    font-size: 0.72rem;
-    color: var(--sandstone);
-  }
-  .home h2 {
-    font-family: 'Cinzel', serif;
-    color: var(--lapis);
-    font-size: clamp(1.6rem, 3vw, 2.1rem);
-    margin: 4px 0 14px;
-  }
-  .home h3 {
-    font-family: 'Cinzel', serif;
-    color: var(--lapis);
-    font-size: 1.05rem;
-    margin: 0 0 6px;
-  }
-  .lede {
-    max-width: 700px;
-    font-size: 1.08rem;
-    color: var(--ink-soft);
-    margin-bottom: 24px;
-  }
-  .center {
-    text-align: center;
-    margin-top: 28px;
-  }
-  .center .btn-gold,
-  .center .btn-lapis {
-    padding: 11px 24px;
-    font-size: 0.95rem;
-  }
-  .btn-lapis {
-    display: inline-block;
-    border-radius: 999px;
-    font-weight: 700;
-    text-decoration: none;
-    background: var(--lapis);
-    color: var(--papyrus);
-  }
-  .btn-lapis:hover {
-    background: var(--lapis-dark);
-  }
-
-  /* Features */
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-  }
-  .feature {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    border-top: 3px solid var(--gold);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  }
-  .feature p {
-    margin: 0;
-    font-size: 0.93rem;
-    color: var(--ink-soft);
-  }
-
-  /* About */
-  .about {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    gap: 32px;
-    align-items: center;
-  }
-  .about img {
-    width: 100%;
-    max-width: 380px;
-    justify-self: center;
-    border-radius: 8px;
-    object-fit: cover;
-    object-position: center 78%;
-    aspect-ratio: 4/5;
-  }
-  .about p {
-    color: var(--ink-soft);
-  }
-  .about a {
-    color: var(--lapis);
-    font-weight: 700;
-    text-decoration: none;
-  }
-  @media (max-width: 720px) {
-    .about {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Beyond Egypt strip */
-  .beyond {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px 16px;
-    padding: 20px;
-    border-top: 1px solid var(--papyrus-dark);
-    border-bottom: 1px solid var(--papyrus-dark);
-    color: var(--ink-soft);
-    font-size: 0.95rem;
-  }
-  .beyond p {
-    margin: 0;
-  }
-  .beyond span {
-    color: var(--sandstone);
-  }
-  .beyond a {
-    color: var(--lapis);
-    font-weight: 700;
-    text-decoration: none;
   }
 </style>
