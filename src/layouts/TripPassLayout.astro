@@ -1,0 +1,112 @@
+---
+// Shared wrapper for the trip pass pages and other Egypt-guide-style pages.
+// Uses the normal site header and footer, plus the guide's card styles inside.
+import PageLayout from '~/layouts/PageLayout.astro';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
+
+export interface Props {
+  title: string;
+  description?: string;
+  /** Wide pages (e.g. film grids) get more room */
+  wide?: boolean;
+  /** Part of the trip pass (hidden from Google while the pass is "coming soon") */
+  tripPass?: boolean;
+}
+
+const {
+  title,
+  description = 'Honest, first-hand verdicts and real footage for every major site in Egypt.',
+  wide = false,
+  tripPass = false,
+} = Astro.props;
+const robots = tripPass && !TRIP_PASS_OPEN ? { index: false, follow: false } : undefined;
+---
+
+<PageLayout metadata={{ title, description, robots }}>
+  <div class:list={['tp', { 'tp--wide': wide }]}>
+    <slot />
+  </div>
+</PageLayout>
+
+<style is:global>
+  .tp {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 72px;
+    font-family: 'Lato', sans-serif;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .tp--wide {
+    max-width: 1180px;
+  }
+  .tp h1,
+  .tp h2,
+  .tp h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--lapis);
+    line-height: 1.25;
+  }
+  .tp h1 {
+    font-size: 2.1rem;
+    margin: 4px 0 12px;
+  }
+  .tp h2 {
+    font-size: 1.45rem;
+    margin: 0 0 12px;
+  }
+  .tp a {
+    color: var(--lapis);
+  }
+  .tp p {
+    margin: 0 0 12px;
+  }
+  .tp ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .tp .eyebrow {
+    display: inline-block;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--sandstone);
+  }
+  .tp .card {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    padding: 20px 24px;
+  }
+  .tp .btn-gold {
+    padding: 10px 22px;
+    font-size: 0.95rem;
+  }
+  .tp .btn-lapis {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    background: var(--dark-chocolate);
+    color: var(--papyrus) !important;
+  }
+  .tp .btn-coming {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    background: var(--papyrus-dark);
+    color: var(--ink-soft);
+    border: 1px dashed var(--sandstone);
+    cursor: default;
+  }
+  .tp .dev {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #a8442f;
+  }
+</style>

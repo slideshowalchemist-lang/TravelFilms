@@ -1,0 +1,108 @@
+---
+// Rendered on request (not at build time) so we can check the visitor's trip pass.
+export const prerender = false;
+
+import { getEntry, render } from 'astro:content';
+import Layout from '~/layouts/TripPassLayout.astro';
+import Verdict from '~/components/trip-pass/Verdict.astro';
+import Videos from '~/components/trip-pass/Videos.astro';
+import { regionBySlug } from '~/data/regions';
+import { isVisible } from '~/lib/sites';
+
+const site = await getEntry('sites', Astro.params.slug!);
+if (!site || !isVisible(site)) return Astro.rewrite('/404');
+
+const d = site.data;
+const region = regionBySlug(d.region)!;
+const unlocked = d.free || Astro.locals.hasAccess;
+const { Content } = unlocked ? await render(site) : { Content: null };
+
+// Paid content must never be cached by a CDN and served to someone else.
+Astro.response.headers.set('Cache-Control', unlocked && !d.free ? 'private, no-store' : 'public, max-age=300');
+---
+
+<Layout tripPass title={d.title} description={d.summary}>
+  <a class="back" href={`/trip-pass/${region.slug}`}>← {region.name}</a>
+  {d.group && <span class="eyebrow group">{d.group}</span>}
+  <h1>{d.title}</h1>
+
+  <div class="facts">
+    <Verdict verdict={d.verdict} large />
+    {d.timeNeeded && <span>Allow {d.timeNeeded}</span>}
+    {d.lastVisited && <span>Last visited {d.lastVisited}</span>}
+    {d.free && <span class="free">Free sample</span>}
+    {d.draft && <span class="draft">Draft</span>}
+  </div>
+
+  <section class="what">
+    <h2>What is it?</h2>
+    {d.summary ? <p>{d.summary}</p> : <p class="todo">Summary still to write.</p>}
+  </section>
+
+  <Videos videos={d.videos} title={d.title} />
+
+  {
+    Content ? (
+      <article class="body">
+        <Content />
+      </article>
+    ) : (
+      <div class="paywall card">
+        <h2>Our honest verdict is part of the trip pass</h2>
+        <p>
+          What it's really like to be there, whether it's worth your time, and the practical details. One pass covers
+          every site in Egypt for a year.
+        </p>
+        <a class="btn-gold" href="/trip-pass#get-the-pass">
+          Get the trip pass
+        </a>
+      </div>
+    )
+  }
+</Layout>
+
+<style>
+  .back {
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .group {
+    display: block !important;
+    margin-top: 18px;
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .free {
+    color: var(--sandstone);
+    font-weight: 700;
+  }
+  .draft {
+    color: #a8442f;
+    border: 1px dashed #a8442f;
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+  .what h2,
+  .body :global(h2) {
+    font-size: 1.15rem !important;
+    margin: 28px 0 8px !important;
+  }
+  .todo {
+    color: #a8442f;
+    font-style: italic;
+  }
+  .paywall {
+    margin-top: 28px;
+    text-align: center;
+    border: 1px solid var(--gold);
+  }
+  .paywall h2 {
+    font-size: 1.15rem !important;
+  }
+</style>

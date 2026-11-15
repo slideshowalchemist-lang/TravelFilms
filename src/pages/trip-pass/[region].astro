@@ -1,0 +1,66 @@
+---
+import Layout from '~/layouts/TripPassLayout.astro';
+import SiteRow from '~/components/trip-pass/SiteRow.astro';
+import { REGIONS } from '~/data/regions';
+import { getSites, groupSites } from '~/lib/sites';
+
+export function getStaticPaths() {
+  return REGIONS.map((r) => ({ params: { region: r.slug }, props: { region: r } }));
+}
+
+const { region } = Astro.props;
+const sites = (await getSites()).filter((s) => s.data.region === region.slug);
+const groups = groupSites(sites);
+---
+
+<Layout tripPass title={region.name} description={region.blurb}>
+  <a class="back" href="/trip-pass">← All regions</a>
+  <span class="eyebrow region-eyebrow">Trip pass · Region</span>
+  <h1>{region.name}</h1>
+  <p class="blurb">{region.blurb}</p>
+
+  {sites.length === 0 && <p class="card">Cards for this region are coming soon.</p>}
+
+  {
+    groups.map(({ group, sites }) => (
+      <section>
+        {group && <h2 class="group">{group}</h2>}
+        {sites.map((s) => (
+          <SiteRow site={s} />
+        ))}
+      </section>
+    ))
+  }
+
+  <div class="cta card">
+    <p>Our honest verdict on every site here, and across Egypt, is part of the trip pass.</p>
+    <a class="btn-gold" href="/trip-pass#get-the-pass">Get the trip pass</a>
+  </div>
+</Layout>
+
+<style>
+  .back {
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .region-eyebrow {
+    display: block !important;
+    margin-top: 18px;
+  }
+  .blurb {
+    color: var(--ink-soft);
+  }
+  section {
+    margin-top: 28px;
+  }
+  .group {
+    font-size: 1.2rem !important;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gold);
+  }
+  .cta {
+    margin-top: 44px;
+    text-align: center;
+    border: 1px solid var(--gold);
+  }
+</style>

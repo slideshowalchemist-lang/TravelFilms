@@ -1,246 +1,140 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-
-import Hero from '~/components/widgets/Hero.astro';
-import Note from '~/components/widgets/Note.astro';
-import Features from '~/components/widgets/Features.astro';
-import Features2 from '~/components/widgets/Features2.astro';
-import Steps from '~/components/widgets/Steps.astro';
-import Content from '~/components/widgets/Content.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
-import FAQs from '~/components/widgets/FAQs.astro';
-import Stats from '~/components/widgets/Stats.astro';
-import CallToAction from '~/components/widgets/CallToAction.astro';
+import HomeSection from '~/components/HomeSection.astro';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
 const metadata = {
   title: 'Egypt Before You Go',
   ignoreTitleTemplate: true,
+  description:
+    'Honest, first-hand verdicts and our own footage for every major site in Egypt, from a couple who keep going back.',
 };
 ---
 
 <Layout metadata={metadata}>
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero__bg" src="/Images/giza1.jpeg" alt="" />
+    <div class="hero__shade"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Four visits in, we still keep going back</p>
+      <h1>See Egypt before you go</h1>
+      <p class="hero__lede">
+        Honest, first-hand verdicts and our own footage for every major site in Egypt, so your first visit feels like
+        your fourth.
+      </p>
+    </div>
+  </section>
 
-  <!-- HERO SECTION -->
-  <section class="relative flex items-center justify-center min-h-[85vh] text-center px-6 overflow-hidden">
+  <div class="home">
+    <!-- TRIP PASS -->
+    <HomeSection
+      eyebrow="The Egypt trip pass"
+      title="Know which sites are worth your time"
+      action={TRIP_PASS_OPEN ? { text: "See what's inside", href: '/trip-pass' } : { text: 'Coming soon' }}
+      cards={[
+        { title: 'Our honest verdict', text: 'Unmissable, worth it, for enthusiasts, or skip it. Straight answers on every site.' },
+        { title: "What it's really like", text: 'The scale, the crowds, the heat, the feeling of standing there, in our own words.' },
+        { title: 'How long to allow', text: 'Time on site, getting there and practical tips, so you can plan your days properly.' },
+        { title: 'Our own footage', text: 'See each site in our films before you decide whether it makes your list.' },
+      ]}
+    >
+      Egypt is a big trip, and you only get so many days there. We're not Egyptologists, just two passionate travellers
+      who've been four times. The trip pass is everything we wish we'd known before our first visit.
+    </HomeSection>
 
-  <!-- BACKGROUND IMAGE -->
-<div class="absolute inset-0">
-  <img
-    src="/Images/giza1.jpeg"
-    alt="Travel background"
-    class="w-full h-full object-cover"
-    />
+    <!-- EGYPT FILMS -->
+    <HomeSection
+      eyebrow="Egypt films"
+      title="Watch Egypt before you go"
+      action={{ text: 'Watch our films', href: '/egypt-films' }}
+      cards={[
+        { title: 'The pyramids and Saqqara', text: 'Giza, the Sphinx and the tombs of Saqqara, up close.', href: '/egypt-films#giza' },
+        { title: "Luxor's temples and tombs", text: 'Karnak, Luxor Temple and the Valleys of the Kings and Queens.', href: '/egypt-films#karnak' },
+        { title: 'Along the Nile', text: 'Edfu, Esna, Kom Ombo, Philae and life on the river.', href: '/egypt-films#edfu' },
+        { title: 'Our highlights films', text: 'The best of each trip, from Cairo to Abu Simbel, 2023 to 2025.', href: '/egypt-films#highlights' },
+      ]}
+    >
+      Free to watch. Our films from four visits to Egypt, shot and edited by us and grouped by region, from the pyramids
+      of Giza to the temples of Abu Simbel. See the places for yourself before you decide where to spend your days.
+    </HomeSection>
 
-    <!-- DARK OVERLAY -->
-    <div class="absolute inset-0 bg-black/50"></div>
+    <!-- BEYOND EGYPT -->
+    <HomeSection
+      eyebrow="Beyond Egypt"
+      title="Our other journeys"
+      action={{ text: 'Explore Beyond Egypt', href: '/beyond-egypt' }}
+      cards={[
+        { title: 'Europe', text: 'Italy, Sicily, Greece, Spain, Portugal, Malta, Croatia, France, Switzerland, the Netherlands and England.', href: '/beyond-egypt' },
+        { title: 'Middle East and North Africa', text: 'Petra in Jordan, Morocco, Qatar and the United Arab Emirates.', href: '/beyond-egypt' },
+        { title: 'Australia and the Pacific', text: 'Our home coast in Australia, and the island of Rarotonga in the Cook Islands.', href: '/beyond-egypt' },
+        { title: 'The Americas', text: 'Our travels in the USA.', href: '/beyond-egypt' },
+      ]}
+    >
+      Egypt is where our hearts are, but it isn't the only place we've pointed a camera. Beyond Egypt has our travel films
+      from 18 other countries, with a page for each one, so you can pick a country and dive straight in.
+    </HomeSection>
   </div>
-
-  <!-- CONTENT -->
-  <div class="relative z-10 text-white">
-    <h1 class="text-5xl md:text-7xl font-bold mb-6">
-      Egypt Before You Go
-    </h1>
-
-    <p class="text-xl md:text-2xl opacity-90 max-w-2xl mx-auto">
-      Cinematic travel storytelling capturing journeys, culture, and atmosphere around the world.
-    </p>
-
-
-  </div>
-
-</section>
-
- <!-- INTRO BANNER -->
-<section class="relative max-w-5xl mx-auto px-6 py-24 text-center">
-  
-  <!-- Optional subtle background styling -->
-  <div class="absolute inset-0 -z-10 opacity-10 bg-gradient-to-b from-black via-transparent to-black"></div>
-
-
-  <p class="text-lg md:text-xl leading-relaxed max-w-3xl mx-auto text-gray-700">
-    Egypt Before You Go is a collection of short travel films and narrated stories capturing the places we’ve explored around the world—sharing the moments, feelings, and memories that make each destination unforgettable. Capturing special lifetime memories, one frame at a time.
-  </p>
-
-</section>
-<!-- FEATURED DESTINATIONS -->
-<section class="max-w-6xl mx-auto px-6 py-20">
-
-  <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
-    Featured Destinations
-  </h2>
-
-  <div class="grid md:grid-cols-3 gap-6">
-
-  <!-- Egypt -->
-  <a href="/egypt" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/abusimbel.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Egypt</h3>
-    </div>
-  </a>
-
-  <!-- Sicily -->
-  <a href="/sicily" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-  <img src="/Images/sicily/sicily.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Sicily</h3>
-    </div>
-  </a>
-
-  <!-- Spain -->
-  <a href="/spain" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/spain/spain.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Spain</h3>
-    </div>
-  </a>
-
-  <!-- Malta -->
-  <a href="/malta" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/malta/malta_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Malta</h3>
-    </div>
-  </a>
-
-  <!-- Italy -->
-  <a href="/italy" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/italy/italy_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Italy</h3>
-    </div>
-  </a>
-
-  <!-- Croatia -->
-  <a href="/croatia" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/croatia/croatia_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Croatia</h3>
-    </div>
-  </a>
-
-  <!-- Portugal -->
-  <a href="/portugal" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/portugal/portugal_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Portugal</h3>
-    </div>
-  </a>
-
-  <!-- Switzerland -->
-  <a href="/switzerland" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/switzerland/switzerland_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Switzerland</h3>
-    </div>
-  </a>
-
-  <!-- Australia -->
-  <a href="/australia" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/australia/australia_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Australia</h3>
-    </div>
-  </a>
-
-  <!-- France -->
-  <a href="/france" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/france/france_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">France</h3>
-    </div>
-  </a>
-
-  <!-- Morocco -->
-  <a href="/morocco" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/morocco/morocco_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Morocco</h3>
-    </div>
-  </a>
-
-  <!-- Cook Islands -->
-  <a href="/cookislands" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/cookislands/cook_island_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Cook Islands</h3>
-    </div>
-  </a>
-
-  <!-- Qatar -->
-  <a href="/qatar" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/qatar/qatar_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Qatar</h3>
-    </div>
-  </a>
-
-  <!-- UAE -->
-  <a href="/uae" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/uae/uae_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">UAE</h3>
-    </div>
-  </a>
-
-  <!-- Greece -->
-  <a href="/greece" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/greece/santorini_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Greece</h3>
-    </div>
-  </a>
-
- <!-- Jordan -->
-  <a href="/jordan" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/jordan/jordan_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Jordan</h3>
-    </div>
-  </a>
-
- <!-- England -->
-  <a href="/england" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/england/england_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">England</h3>
-    </div>
-  </a>
-
- <!-- Netherlands -->
-  <a href="/netherlands" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/netherlands/netherlands_thumb.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">Netherlands</h3>
-    </div>
-  </a>
-
-   <!-- USA -->
-  <a href="/usa" class="group relative overflow-hidden rounded-2xl aspect-[16/9] block">
-    <img src="/Images/usa/usa_thumb.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
-    <div class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute bottom-4 left-4 text-white">
-      <h3 class="text-2xl font-bold">USA</h3>
-    </div>
-  </a>
-
-</div>
 </Layout>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    min-height: 72vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    overflow: hidden;
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    /* Light, warm shade only behind the text, so the photo keeps its natural colour */
+    background: radial-gradient(ellipse 60% 55% at center, rgba(25, 16, 8, 0.42) 0%, rgba(25, 16, 8, 0.18) 60%, rgba(25, 16, 8, 0) 100%);
+  }
+  .hero__content {
+    position: relative;
+    max-width: 760px;
+    color: #fff;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.45);
+  }
+  .hero__eyebrow {
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--gold-bright);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Cinzel', serif;
+    color: #fff;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    margin: 0 0 18px;
+  }
+  .hero__lede {
+    font-size: 1.2rem;
+    opacity: 0.92;
+    margin: 0 auto;
+    max-width: 620px;
+  }
+
+  /* Page body */
+  .home {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 64px 24px 16px;
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,113 @@
+---
+import Layout from '~/layouts/TripPassLayout.astro';
+import SiteRow from '~/components/trip-pass/SiteRow.astro';
+import PassOffer from '~/components/trip-pass/PassOffer.astro';
+import { REGIONS } from '~/data/regions';
+import { getSites } from '~/lib/sites';
+
+const sites = await getSites();
+const countFor = (slug: string) => sites.filter((s) => s.data.region === slug).length;
+const samples = sites.filter((s) => s.data.free);
+---
+
+<Layout tripPass title="Trip pass" description="Our honest verdict on every major site in Egypt, with real footage. One pass, twelve months.">
+  <section class="intro">
+    <span class="eyebrow">The Egypt trip pass</span>
+    <h1>Know which sites are worth your time, before you go</h1>
+    <p class="lede">
+      Egypt is a big trip, and you only get so many days there. The trip pass is our honest, first-hand verdict on every
+      major site: what it's really like to stand there, whether it's worth your limited time, how long to allow, and how
+      to get there. Every card comes with our own footage, so you can see it for yourself.
+    </p>
+    <p class="lede small">Planning with ChatGPT or a tour company? Use the trip pass to check what they can't tell you.</p>
+  </section>
+
+  <section>
+    <PassOffer siteCount={sites.length} />
+    {
+      import.meta.env.DEV && (
+        <p class="dev" style="text-align:center">
+          Local testing only: <a href="/api/dev-pass?next=/trip-pass">give myself a pass</a> ·{' '}
+          <a href="/api/dev-pass?off=1&next=/trip-pass">remove it</a>
+        </p>
+      )
+    }
+  </section>
+
+  {
+    samples.length > 0 && (
+      <section>
+        <span class="eyebrow">Free samples</span>
+        <h2>Read a full card, free</h2>
+        <p class="muted">These cards are open to everyone, so you can see exactly what the pass gives you.</p>
+        {samples.map((s) => (
+          <SiteRow site={s} />
+        ))}
+      </section>
+    )
+  }
+
+  <section>
+    <span class="eyebrow">Inside the pass</span>
+    <h2>Browse by region</h2>
+    <div class="regions">
+      {
+        REGIONS.map((r) => (
+          <a class="region card" href={`/trip-pass/${r.slug}`}>
+            <h3>{r.name}</h3>
+            <p>{r.blurb}</p>
+            <span class="count">
+              {countFor(r.slug)} {countFor(r.slug) === 1 ? 'site' : 'sites'}
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  section {
+    margin-bottom: 52px;
+  }
+  .intro {
+    text-align: center;
+  }
+  .lede {
+    max-width: 680px;
+    margin: 0 auto 14px !important;
+    font-size: 1.08rem;
+  }
+  .lede.small,
+  .muted {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+  .regions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .region {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid transparent;
+  }
+  .region:hover {
+    border-color: var(--gold);
+  }
+  .region h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+  }
+  .region p {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  .count {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--sandstone);
+  }
+</style>

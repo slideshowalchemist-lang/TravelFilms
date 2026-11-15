@@ -1,0 +1,17 @@
+---
+import { VERDICTS } from '~/data/regions';
+
+interface Props { verdict: string; large?: boolean }
+const { verdict, large = false } = Astro.props;
+const label = VERDICTS[verdict as keyof typeof VERDICTS];
+---
+{label && <span class:list={['verdict', `v-${verdict}`, { large }]}>{label}</span>}
+
+<style>
+  .verdict { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.04em; padding: 2px 10px; border-radius: 999px; }
+  .large { font-size: 0.95rem; padding: 5px 14px; }
+  .v-unmissable { background: var(--gold); color: var(--lapis-dark); }
+  .v-worth-it { background: var(--lapis); color: var(--papyrus); }
+  .v-enthusiasts { background: var(--papyrus-dark); color: var(--ink); }
+  .v-skip { background: #e7d8d2; color: #7a3424; }
+</style>

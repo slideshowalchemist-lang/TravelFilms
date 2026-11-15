@@ -1,75 +1,134 @@
 ---
 import { Icon } from 'astro-icon/components';
-import { SITE } from 'astrowind:config';
-import { getHomePermalink } from '~/utils/permalinks';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
 
-interface Link {
-  text?: string;
-  href?: string;
-  ariaLabel?: string;
-  icon?: string;
-}
-
-interface Links {
-  title?: string;
-  links: Array<Link>;
-}
-
+// Props are kept for compatibility with the layout, but the footer content lives here.
 export interface Props {
-  links: Array<Links>;
-  secondaryLinks: Array<Link>;
-  socialLinks: Array<Link>;
+  links?: unknown[];
+  secondaryLinks?: unknown[];
+  socialLinks?: unknown[];
   footNote?: string;
   theme?: string;
 }
 
-const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+const EMAIL = 'egyptbeforeyougo@gmail.com';
+const year = new Date().getFullYear();
 ---
 
-<footer class="relative text-center py-28 px-6 bg-gradient-to-b from-transparent to-black text-white">
+<footer class="eb-footer">
+  <div class="eb-footer__inner">
+    <p class="eb-footer__closer">We want your first visit to feel like your fourth.</p>
 
-  <!-- Background fade -->
-  <div class="absolute inset-0 -z-10 bg-black/80"></div>
+    {
+      TRIP_PASS_OPEN ? (
+        <a class="btn-gold eb-footer__cta" href="/trip-pass">Get the trip pass</a>
+      ) : (
+        <span class="eb-footer__soon">The Egypt trip pass is coming soon</span>
+      )
+    }
 
-  <!-- Divider -->
-  <div class="w-16 h-px bg-gray-500 mx-auto mb-10 opacity-50"></div>
+    <nav class="eb-footer__links" aria-label="Footer">
+      <a href="/">Home</a>
+      <a href="/egypt-films">Egypt films</a>
+      {TRIP_PASS_OPEN ? <a href="/trip-pass">Trip pass</a> : <span class="eb-footer__muted">Trip pass (coming soon)</span>}
+      <a href="/beyond-egypt">Beyond Egypt</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
 
-  <!-- Brand -->
-  <h3 class="text-xl md:text-2xl font-light tracking-wide mb-4">
-    Egypt Before You Go
-  </h3>
+    <ul class="eb-footer__social">
+      <li>
+        <a href="https://youtube.com/@egyptbeforeyougo" aria-label="YouTube" target="_blank" rel="noopener">
+          <Icon name="tabler:brand-youtube" class="w-6 h-6" />
+        </a>
+      </li>
+      <li>
+        <a href="https://www.instagram.com/egypt_before_you_go/" aria-label="Instagram" target="_blank" rel="noopener">
+          <Icon name="tabler:brand-instagram" class="w-6 h-6" />
+        </a>
+      </li>
+      <li>
+        <a href={`mailto:${EMAIL}`} aria-label="Email">
+          <Icon name="tabler:mail" class="w-6 h-6" />
+        </a>
+      </li>
+    </ul>
 
-  <!-- Tagline -->
-  <p class="text-sm md:text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
-    Capturing special lifetime memories, one frame at a time.
-  </p>
-
-<!-- Social Links -->
-  <ul class="flex justify-center gap-4 mt-10">
-    <li>
-      <a href="https://youtube.com/@slideshowalchemist758" aria-label="YouTube" target="_blank" rel="noopener"
-        class="text-gray-400 hover:text-white transition duration-300">
-        <Icon name="tabler:brand-youtube" class="w-6 h-6" />
-      </a>
-    </li>
-    <li>
-      <a href="https://www.instagram.com/slideshow_alchemist/" aria-label="Instagram" target="_blank" rel="noopener"
-        class="text-gray-400 hover:text-white transition duration-300">
-        <Icon name="tabler:brand-instagram" class="w-6 h-6" />
-      </a>
-    </li>
-    <li>
-      <a href="mailto:slideshow.alchemist@gmail.com" aria-label="Email"
-        class="text-gray-400 hover:text-white transition duration-300">
-        <Icon name="tabler:mail" class="w-6 h-6" />
-      </a>
-    </li>
-  </ul>
-
-
-  <!-- Closing note -->
-  <p class="text-xs text-gray-500 mt-12 italic tracking-wide">
-    Take only memories, leave only footprints.
-  </p>
-
+    <p class="eb-footer__email"><a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+    <p class="eb-footer__small">© {year} Egypt Before You Go · Rick &amp; Trena</p>
+  </div>
 </footer>
+
+<style>
+  .eb-footer {
+    background: var(--dark-chocolate);
+    color: var(--papyrus-dark);
+    border-top: 3px solid var(--gold);
+    text-align: center;
+    padding: 56px 24px 40px;
+  }
+  .eb-footer__inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .eb-footer__closer {
+    font-family: 'Cinzel', serif;
+    color: var(--gold-bright);
+    font-size: 1.25rem;
+    margin: 0 0 20px;
+  }
+  .eb-footer__cta {
+    padding: 10px 22px;
+    font-size: 0.95rem;
+  }
+  .eb-footer__soon {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px dashed var(--gold);
+    border-radius: 999px;
+    color: var(--gold-bright);
+    font-size: 0.9rem;
+  }
+  .eb-footer__muted {
+    color: var(--papyrus-dark);
+    opacity: 0.6;
+  }
+  .eb-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 22px;
+    margin: 32px 0 20px;
+    font-size: 0.9rem;
+  }
+  .eb-footer__links a,
+  .eb-footer__email a {
+    color: var(--papyrus);
+    text-decoration: none;
+  }
+  .eb-footer__links a:hover,
+  .eb-footer__email a:hover,
+  .eb-footer__social a:hover {
+    color: var(--gold-bright);
+  }
+  .eb-footer__social {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+  }
+  .eb-footer__social a {
+    color: var(--papyrus-dark);
+  }
+  .eb-footer__email {
+    font-size: 0.9rem;
+    margin: 6px 0;
+  }
+  .eb-footer__small {
+    font-size: 0.78rem;
+    opacity: 0.7;
+    margin-top: 18px;
+  }
+</style>

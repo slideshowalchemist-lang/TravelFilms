@@ -1,56 +1,43 @@
-import { getPermalink, getBlogPermalink, getAsset } from './utils/permalinks';
+import { TRIP_PASS_OPEN } from '~/data/tripPassStatus';
+
 
 export const headerData = {
   links: [
+    { text: 'Home', href: '/' },
+    { text: 'Egypt films', href: '/egypt-films' },
+    TRIP_PASS_OPEN ? { text: 'Trip pass', href: '/trip-pass' } : { text: 'Trip pass', badge: 'Coming soon' },
     {
-      text: 'Home',
-      href: '/',
-    },
-    {
-      text: 'About',
-      href: '/about',
-    },
-    {
-      text: 'Contact',
-      href: '/contact',
-    },
-    {
-      text: 'Locations',
+      text: 'Beyond Egypt',
       links: [
-        { text: 'Egypt', href: '/egypt' },
+        { text: 'All other journeys', href: '/beyond-egypt' },
+        { text: 'Australia', href: '/australia' },
+        { text: 'Cook Islands', href: '/cookislands' },
+        { text: 'Croatia', href: '/croatia' },
+        { text: 'England', href: '/england' },
+        { text: 'France', href: '/france' },
         { text: 'Greece', href: '/greece' },
         { text: 'Italy', href: '/italy' },
-        { text: 'Sicily', href: '/sicily' },
-        { text: 'Qatar', href: '/qatar' },
-        { text: 'Spain', href: '/spain' },
-        { text: 'Malta', href: '/malta' },
-        { text: 'Croatia', href: '/croatia' },
-        { text: 'Portugal', href: '/portugal' },
-        { text: 'Switzerland', href: '/switzerland' },
-        { text: 'Australia', href: '/australia' },
-        { text: 'France', href: '/france' },
-        { text: 'Morocco', href: '/morocco' },
-        { text: 'United Arab Emirates', href: '/UAE' },
-        { text: 'USA', href: '/usa' },
-        { text: 'Netherlands', href: '/netherlands' },
         { text: 'Jordan', href: '/jordan' },
-        { text: 'England', href: '/england' },
-        { text: 'CookIslands', href: '/cookislands' },
+        { text: 'Malta', href: '/malta' },
+        { text: 'Morocco', href: '/morocco' },
+        { text: 'Netherlands', href: '/netherlands' },
+        { text: 'Portugal', href: '/portugal' },
+        { text: 'Qatar', href: '/qatar' },
+        { text: 'Sicily', href: '/sicily' },
+        { text: 'Spain', href: '/spain' },
+        { text: 'Switzerland', href: '/switzerland' },
+        { text: 'United Arab Emirates', href: '/uae' },
+        { text: 'USA', href: '/usa' },
       ],
     },
+    { text: 'About', href: '/about' },
+    { text: 'Contact', href: '/contact' },
   ],
+  actions: TRIP_PASS_OPEN ? [{ text: 'Get the trip pass', href: '/trip-pass', class: 'btn-gold' }] : [],
 };
 
 export const footerData = {
   
-  socialLinks: [
-    { ariaLabel: 'X', icon: 'tabler:brand-x', href: '#' },
-    { ariaLabel: 'Instagram', icon: 'tabler:brand-instagram', href: '#' },
-    { ariaLabel: 'Facebook', icon: 'tabler:brand-facebook', href: '#' },
-    { ariaLabel: 'RSS', icon: 'tabler:rss', href: getAsset('/rss.xml') },
-    { ariaLabel: 'Github', icon: 'tabler:brand-github', href: 'https://github.com/arthelokyo/astrowind' },
-  ],
-  footNote: `
-    Made by <a class="text-blue-600 underline dark:text-muted" href="https://github.com/arthelokyo"> Arthelokyo</a> · All rights reserved.
-  `,
+  socialLinks: [],
+  footNote: '',
 };
