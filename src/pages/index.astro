@@ -99,12 +99,14 @@ const metadata = {
   .hero__shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(18, 42, 64, 0.55), rgba(18, 42, 64, 0.75));
+    /* Light, warm shade only behind the text, so the photo keeps its natural colour */
+    background: radial-gradient(ellipse 60% 55% at center, rgba(25, 16, 8, 0.42) 0%, rgba(25, 16, 8, 0.18) 60%, rgba(25, 16, 8, 0) 100%);
   }
   .hero__content {
     position: relative;
     max-width: 760px;
     color: #fff;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.45);
   }
   .hero__eyebrow {
     font-weight: 700;
