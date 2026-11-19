@@ -1,6 +1,6 @@
 ---
 import type { Site } from '~/lib/sites';
-import { thumbUrl } from '~/lib/sites';
+import { thumbUrl, verdictOf } from '~/lib/sites';
 import Verdict from '~/components/trip-pass/Verdict.astro';
 
 interface Props { site: Site }
@@ -15,7 +15,7 @@ const thumb = d.videos[0];
   <div class="text">
     <h3>{d.title}</h3>
     <div class="meta">
-      <Verdict verdict={d.verdict} />
+      <Verdict verdict={verdictOf(site)} />
       {d.timeNeeded && <span>{d.timeNeeded}</span>}
       {d.free ? <span class="free">Free sample</span> : <span class="lock" title="Trip pass">🔒</span>}
       {d.draft && <span class="draft">Draft</span>}

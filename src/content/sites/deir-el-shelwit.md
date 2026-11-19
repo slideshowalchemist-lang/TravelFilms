@@ -2,6 +2,7 @@
 title: "Deir el-Shelwit"
 region: luxor-west
 verdict: ""
+scores: {}              # e.g. { scale: 4, preservation: 4, colour: 1, sculpture: 2, uniqueness: 3, story: 3, access: 3 }
 free: false
 draft: true
 lastVisited: ""

@@ -8,5 +8,7 @@ declare namespace App {
   interface Locals {
     /** true when the visitor holds a valid, unexpired trip pass cookie */
     hasAccess: boolean;
+    /** true when Rick or Trena are signed in to the owner preview */
+    isOwner: boolean;
   }
 }

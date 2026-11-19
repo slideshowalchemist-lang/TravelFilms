@@ -20,13 +20,52 @@ const {
   tripPass = false,
 } = Astro.props;
 const robots = tripPass && !TRIP_PASS_OPEN ? { index: false, follow: false } : undefined;
+const path = Astro.url.pathname.replace(/\/$/, '');
+const isOwner = Astro.locals.isOwner;
+const showBar = tripPass && path !== '/trip-pass/sign-in';
 ---
 
 <PageLayout metadata={{ title, description, robots }}>
+  {
+    showBar && (
+      <nav class="tp-bar" aria-label="Trip pass">
+        <div class="tp-bar__inner">
+          <a href="/trip-pass" aria-current={path === '/trip-pass' ? 'page' : undefined}>Explore sites</a>
+          <a href="/trip-pass/plan" aria-current={path === '/trip-pass/plan' ? 'page' : undefined}>
+            My plan (<span data-plan-count>0</span>)
+          </a>
+          {isOwner && !TRIP_PASS_OPEN && (
+            <span class="tp-bar__owner">
+              Owner preview: only you can see this
+              <form method="post" action="/api/owner-logout">
+                <button type="submit">Sign out</button>
+              </form>
+            </span>
+          )}
+        </div>
+      </nav>
+    )
+  }
   <div class:list={['tp', { 'tp--wide': wide }]}>
     <slot />
   </div>
 </PageLayout>
+
+<script>
+  // "My plan" lives in this browser (localStorage), so it works before customer accounts exist.
+  const KEY = 'ebyg-plan';
+  const read = (): string[] => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
+  };
+  const paint = () => document.querySelectorAll('[data-plan-count]').forEach((el) => (el.textContent = String(read().length)));
+  paint();
+  window.addEventListener('plan-changed', paint);
+  window.addEventListener('storage', paint);
+</script>
 
 <style is:global>
   .tp {
@@ -38,7 +77,50 @@ const robots = tripPass && !TRIP_PASS_OPEN ? { index: false, follow: false } : u
     color: var(--ink);
   }
   .tp--wide {
-    max-width: 1180px;
+    max-width: 1280px;
+  }
+  .tp-bar {
+    background: var(--papyrus-dark);
+    border-bottom: 1px solid var(--gold);
+    font-family: 'Lato', sans-serif;
+  }
+  .tp-bar__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    align-items: center;
+  }
+  .tp-bar a {
+    color: var(--lapis);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding: 10px 2px;
+    border-bottom: 2px solid transparent;
+  }
+  .tp-bar a[aria-current='page'] {
+    border-bottom-color: var(--lapis);
+  }
+  .tp-bar__owner {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  .tp-bar__owner button {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--ink-soft);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.85rem;
+    cursor: pointer;
   }
   .tp h1,
   .tp h2,

@@ -1,0 +1,336 @@
+---
+// My plan: the sites a visitor has added, grouped by region and stop. The list itself
+// lives in the visitor's browser (localStorage), so this page just ships the card data.
+export const prerender = false;
+
+import Layout from '~/layouts/TripPassLayout.astro';
+import { REGIONS } from '~/data/regions';
+import { VERDICT_LABELS } from '~/lib/rubric';
+import { cardData, getSites } from '~/lib/sites';
+
+const cards = (await getSites()).map(cardData);
+const data = {
+  cards,
+  regions: REGIONS.map((r) => ({ slug: r.slug, name: r.name })),
+  verdicts: VERDICT_LABELS,
+};
+---
+
+<Layout tripPass wide title="My plan" description="Your Egypt shortlist.">
+  <span class="eyebrow">My plan</span>
+  <h1>Your Egypt shortlist</h1>
+
+  <div class="plan-layout">
+    <div id="plan-list" class="plan-list"></div>
+    <aside class="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">Plan summary</h2>
+      <div class="tiles">
+        <div><span class="label">Sites</span><span class="big" id="sum-sites">0</span></div>
+        <div><span class="label">Stops</span><span class="big" id="sum-stops">0</span></div>
+        <div class="wide">
+          <span class="label">Time on site</span><span class="big" id="sum-time">–</span>
+          <span class="note">Plus travel between stops</span>
+        </div>
+      </div>
+      <div>
+        <span class="label">Verdict mix</span>
+        <ul id="sum-mix"></ul>
+      </div>
+      <button type="button" class="print" onclick="window.print()">Print or save as PDF</button>
+    </aside>
+  </div>
+
+  <script type="application/json" id="plan-data" set:html={JSON.stringify(data).replace(/</g, '\\u003c')} />
+</Layout>
+
+<script>
+  type Card = {
+    id: string;
+    title: string;
+    region: string;
+    group: string | null;
+    verdict: string;
+    timeNeeded: string;
+  };
+  const data = JSON.parse(document.getElementById('plan-data')!.textContent!);
+  const cards: Card[] = data.cards;
+  const byId = new Map(cards.map((c) => [c.id, c]));
+  const verdicts: Record<string, string> = data.verdicts;
+  const KEY = 'ebyg-plan';
+  const read = (): string[] => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
+  };
+  const write = (ids: string[]) => {
+    localStorage.setItem(KEY, JSON.stringify(ids));
+    window.dispatchEvent(new Event('plan-changed'));
+    render();
+  };
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+  // "0.3–0.5 hrs" → [0.3, 0.5]; "45 min" → [0.75, 0.75]
+  function hours(t: string): [number, number] | null {
+    const nums = (t.match(/\d+(\.\d+)?/g) || []).map(Number);
+    if (!nums.length) return null;
+    const scale = /min/i.test(t) && !/hr|hour/i.test(t) ? 1 / 60 : 1;
+    return [nums[0] * scale, (nums[1] ?? nums[0]) * scale];
+  }
+  const fmt = (h: number) => (Math.round(h * 2) / 2).toString();
+
+  function render() {
+    const ids = read().filter((id) => byId.has(id));
+    const chosen = ids.map((id) => byId.get(id)!);
+    const list = document.getElementById('plan-list')!;
+
+    if (!chosen.length) {
+      list.innerHTML = `<div class="card empty"><p>Your plan is empty. Add sites from <a href="/trip-pass">Explore</a> and they'll appear here, grouped by stop.</p></div>`;
+    } else {
+      let html = '';
+      for (const r of data.regions) {
+        const inRegion = chosen.filter((c) => c.region === r.slug);
+        if (!inRegion.length) continue;
+        const stops = new Map<string, Card[]>();
+        for (const c of inRegion) {
+          const k = c.group ?? c.id;
+          if (!stops.has(k)) stops.set(k, []);
+          stops.get(k)!.push(c);
+        }
+        for (const [k, sites] of stops) {
+          const heading = sites[0].group ? `${r.name} · ${sites[0].group}` : r.name;
+          const others = sites[0].group
+            ? cards.filter((c) => c.group === sites[0].group && c.region === r.slug && !ids.includes(c.id))
+            : [];
+          html += `<section class="stop card">
+            <h2>${esc(heading)}</h2>
+            <ul class="rows">${sites
+              .map(
+                (c) => `<li>
+                <a class="name" href="/trip-pass/sites/${esc(c.id)}">${esc(c.title)}</a>
+                ${c.verdict ? `<span class="verdict v-${c.verdict}">${esc(verdicts[c.verdict])}</span>` : '<span class="unscored">Not scored yet</span>'}
+                <span class="time">${esc(c.timeNeeded || '')}</span>
+                <button type="button" data-remove="${esc(c.id)}" aria-label="Remove ${esc(c.title)} from plan">Remove</button>
+              </li>`
+              )
+              .join('')}</ul>
+            ${
+              others.length
+                ? `<div class="nudge"><span>You're already at this stop. Also here: ${others.map((o) => esc(o.title)).join(', ')}.</span>
+                   <button type="button" data-add="${others.map((o) => esc(o.id)).join(',')}">Add ${others.length === 1 ? 'it' : `all ${others.length}`}</button></div>`
+                : ''
+            }
+          </section>`;
+          void k;
+        }
+      }
+      list.innerHTML = html;
+    }
+
+    // Summary
+    const stopCount = new Set(chosen.map((c) => `${c.region}|${c.group ?? c.id}`)).size;
+    let lo = 0,
+      hi = 0,
+      known = 0;
+    for (const c of chosen) {
+      const h = hours(c.timeNeeded);
+      if (h) {
+        lo += h[0];
+        hi += h[1];
+        known++;
+      }
+    }
+    document.getElementById('sum-sites')!.textContent = String(chosen.length);
+    document.getElementById('sum-stops')!.textContent = String(stopCount);
+    document.getElementById('sum-time')!.textContent = known
+      ? `${fmt(lo)}${fmt(hi) !== fmt(lo) ? '–' + fmt(hi) : ''} hrs`
+      : '–';
+    const mix: Record<string, number> = {};
+    for (const c of chosen) mix[c.verdict || 'unscored'] = (mix[c.verdict || 'unscored'] ?? 0) + 1;
+    document.getElementById('sum-mix')!.innerHTML =
+      Object.entries(mix)
+        .map(([v, n]) => `<li>${n} ${esc(v === 'unscored' ? 'Not scored yet' : verdicts[v])}</li>`)
+        .join('') || '<li>Nothing yet</li>';
+  }
+
+  document.getElementById('plan-list')!.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const rm = t.closest('button[data-remove]') as HTMLButtonElement | null;
+    const add = t.closest('button[data-add]') as HTMLButtonElement | null;
+    if (rm) write(read().filter((x) => x !== rm.dataset.remove));
+    if (add) write([...read(), ...add.dataset.add!.split(',')]);
+  });
+
+  render();
+</script>
+
+<style>
+  .plan-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+    margin-top: 12px;
+  }
+  .plan-list {
+    flex: 999 1 560px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .plan-list :global(.stop) {
+    border-top: 3px solid var(--gold);
+  }
+  .plan-list :global(.stop h2) {
+    font-size: 1.2rem !important;
+  }
+  .plan-list :global(.rows) {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0;
+  }
+  .plan-list :global(.rows li) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid var(--papyrus);
+  }
+  .plan-list :global(.name) {
+    flex: 1 1 220px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+  .plan-list :global(.time) {
+    width: 110px;
+    font-size: 0.92rem;
+  }
+  .plan-list :global(button) {
+    min-height: 42px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid var(--papyrus-dark);
+    background: #fff;
+    color: var(--ink);
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+  }
+  .plan-list :global(.nudge) {
+    margin-top: 10px;
+    background: var(--papyrus);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+  }
+  .plan-list :global(.nudge button) {
+    background: var(--lapis);
+    color: #fff;
+    border: 0;
+    font-weight: 700;
+  }
+  .plan-list :global(.verdict) {
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .plan-list :global(.v-unmissable) {
+    background: var(--gold);
+    color: var(--lapis-dark);
+  }
+  .plan-list :global(.v-worth-it) {
+    background: var(--lapis);
+    color: var(--papyrus);
+  }
+  .plan-list :global(.v-enthusiasts) {
+    background: #fff;
+    color: var(--lapis);
+    border: 1px solid var(--lapis);
+  }
+  .plan-list :global(.v-if-you-have-time) {
+    color: var(--ink-soft);
+    border: 1px solid var(--ink-soft);
+  }
+  .plan-list :global(.unscored) {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .summary {
+    flex: 1 1 300px;
+    max-width: 360px;
+    background: var(--lapis);
+    color: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .summary h2 {
+    color: #fff !important;
+    margin: 0 !important;
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .tiles div {
+    background: var(--lapis-dark);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .tiles .wide {
+    grid-column: span 2;
+  }
+  .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--papyrus-dark);
+  }
+  .big {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .note {
+    font-size: 0.85rem;
+    color: var(--papyrus-dark);
+  }
+  #sum-mix {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 6px 0 0;
+  }
+  .print {
+    min-height: 48px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--gold);
+    color: var(--lapis-dark);
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  @media print {
+    .print,
+    .plan-list :global(button) {
+      display: none;
+    }
+  }
+</style>

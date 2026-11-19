@@ -67,6 +67,7 @@ const postCollection = defineCollection({
 });
 
 // Trip pass: one Markdown file per site in src/content/sites/.
+const score = z.number().min(1).max(5).multipleOf(0.5);
 const siteCollection = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/sites' }),
   schema: z.object({
@@ -74,7 +75,25 @@ const siteCollection = defineCollection({
     region: z.enum(REGION_SLUGS),
     /** Sites visited together (one ticket, one stop) share a group name, e.g. "Valley of the Kings" */
     group: z.string().optional(),
-    verdict: z.enum(['', 'unmissable', 'worth-it', 'enthusiasts', 'skip']).default(''),
+    /** Leave blank: the verdict is worked out from the scores. Set it only to override the rules (say why in verdictNote). */
+    verdict: z.enum(['', 'unmissable', 'worth-it', 'enthusiasts', 'if-you-have-time']).default(''),
+    verdictNote: z.string().optional(),
+    /** The rubric: 1–5 on each criterion (half points allowed). Leave any out until it's agreed. */
+    scores: z
+      .object({
+        scale: score,
+        preservation: score,
+        colour: score,
+        sculpture: score,
+        uniqueness: score,
+        story: score,
+        access: score,
+      })
+      .partial()
+      .default({}),
+    /** The fact line: time on site · getting there · one tip */
+    gettingThere: z.string().optional(),
+    tip: z.string().optional(),
     /** Free sample cards are readable without a trip pass */
     free: z.boolean().default(false),
     /** Drafts are hidden on the live site unless SHOW_DRAFTS is on (src/lib/sites.ts) */
