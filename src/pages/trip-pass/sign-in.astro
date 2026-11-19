@@ -1,0 +1,196 @@
+---
+// While the trip pass is "coming soon", this is the owners' way in (password = OWNER_PASSWORD).
+// When customer accounts are connected, the customer sign-in goes here too.
+export const prerender = false;
+
+import Layout from '~/layouts/TripPassLayout.astro';
+import { PASS_PRICE } from '~/lib/sites';
+
+const error = Astro.url.searchParams.get('error');
+const rawNext = Astro.url.searchParams.get('next') ?? '/trip-pass';
+const next = /^\/trip-pass(\/|\?|$)/.test(rawNext) && !rawNext.startsWith('//') ? rawNext : '/trip-pass';
+const signedIn = Astro.locals.isOwner;
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+---
+
+<Layout tripPass wide title="Sign in" description="Sign in to the Egypt trip pass.">
+  <div class="signin">
+    <section class="panel form-panel" aria-labelledby="signin-title">
+      <span class="eyebrow">The Egypt trip pass</span>
+      <h1 id="signin-title">Welcome back</h1>
+      {
+        signedIn ? (
+          <>
+            <p class="muted">You're signed in to the owner preview.</p>
+            <a class="btn-gold" href={next}>
+              Open the trip pass
+            </a>
+          </>
+        ) : (
+          <>
+            <p class="muted">The trip pass is still being written. For now, only Rick and Trena can sign in.</p>
+            {error === '1' && (
+              <p class="alert" role="alert">
+                That password didn't match. Try again.
+              </p>
+            )}
+            {error === 'setup' && (
+              <p class="alert" role="alert">
+                Sign-in isn't set up yet: add OWNER_PASSWORD and ACCESS_SECRET in Netlify, then redeploy.
+              </p>
+            )}
+            <form method="post" action="/api/owner-login">
+              <input type="hidden" name="next" value={next} />
+              <label for="password">Password</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" required />
+              <button class="btn-gold submit" type="submit">
+                Sign in
+              </button>
+            </form>
+          </>
+        )
+      }
+    </section>
+
+    <section class="panel offer-panel" aria-labelledby="offer-title">
+      <h2 id="offer-title">Know which sites are worth your time</h2>
+      <ul>
+        <li>Our honest verdict on every site, scored on the same seven criteria</li>
+        <li>Filter by what you care about: colour, scale, how easy it is to reach</li>
+        <li>Our own footage of each site before you decide</li>
+        <li>Build your shortlist and print it as a plan</li>
+      </ul>
+      <div class="price">
+        <span class="price-label">Trip pass</span>
+        <span class="price-value">{PASS_PRICE}</span>
+        <span class="price-note">12 months access</span>
+      </div>
+      <span class="coming">Coming soon</span>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .signin {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: stretch;
+    max-width: 1040px;
+    margin: 24px auto 0;
+  }
+  .panel {
+    flex: 1 1 380px;
+    border-radius: 8px;
+    padding: 36px;
+  }
+  .form-panel {
+    background: #fff;
+    border-top: 3px solid var(--gold);
+  }
+  .muted {
+    color: var(--ink-soft);
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  label {
+    font-weight: 700;
+    color: var(--lapis);
+  }
+  input[type='password'] {
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1.5px solid var(--papyrus-dark);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+  input[type='password']:focus {
+    outline: 2px solid var(--lapis);
+    outline-offset: 1px;
+  }
+  .submit {
+    margin-top: 12px;
+    min-height: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 999px;
+  }
+  .alert {
+    margin-top: 12px !important;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: #f6e3dc;
+    color: #7a3424;
+  }
+  .offer-panel {
+    background: var(--lapis);
+    color: var(--papyrus);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .offer-panel h2 {
+    color: #fff !important;
+  }
+  .offer-panel ul {
+    list-style: none;
+    padding: 0 !important;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .offer-panel li {
+    padding-left: 26px;
+    position: relative;
+  }
+  .offer-panel li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.35em;
+    width: 12px;
+    height: 7px;
+    border-left: 2.5px solid var(--gold);
+    border-bottom: 2.5px solid var(--gold);
+    transform: rotate(-45deg);
+  }
+  .price {
+    margin-top: auto;
+    background: var(--lapis-dark);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+  }
+  .price-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--papyrus-dark);
+  }
+  .price-value {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #fff;
+  }
+  .price-note {
+    font-size: 0.9rem;
+    color: var(--papyrus-dark);
+  }
+  .coming {
+    text-align: center;
+    padding: 12px;
+    border-radius: 999px;
+    border: 1px dashed var(--gold);
+    color: var(--papyrus);
+    font-weight: 700;
+  }
+</style>

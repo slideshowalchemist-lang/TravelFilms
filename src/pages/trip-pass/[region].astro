@@ -1,14 +1,14 @@
 ---
 import Layout from '~/layouts/TripPassLayout.astro';
 import SiteRow from '~/components/trip-pass/SiteRow.astro';
-import { REGIONS } from '~/data/regions';
+import { regionBySlug } from '~/data/regions';
 import { getSites, groupSites } from '~/lib/sites';
 
-export function getStaticPaths() {
-  return REGIONS.map((r) => ({ params: { region: r.slug }, props: { region: r } }));
-}
+// Rendered on request so the owner-preview lock (src/middleware.ts) applies.
+export const prerender = false;
 
-const { region } = Astro.props;
+const region = regionBySlug(Astro.params.region!);
+if (!region) return Astro.rewrite('/404');
 const sites = (await getSites()).filter((s) => s.data.region === region.slug);
 const groups = groupSites(sites);
 ---

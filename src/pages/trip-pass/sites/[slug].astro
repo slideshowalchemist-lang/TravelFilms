@@ -7,7 +7,8 @@ import Layout from '~/layouts/TripPassLayout.astro';
 import Verdict from '~/components/trip-pass/Verdict.astro';
 import Videos from '~/components/trip-pass/Videos.astro';
 import { regionBySlug } from '~/data/regions';
-import { isVisible } from '~/lib/sites';
+import { getSites, isVisible, verdictOf } from '~/lib/sites';
+import { CRITERIA, isScored, rewardScore, verdictReason } from '~/lib/rubric';
 
 const site = await getEntry('sites', Astro.params.slug!);
 if (!site || !isVisible(site)) return Astro.rewrite('/404');
@@ -16,59 +17,221 @@ const d = site.data;
 const region = regionBySlug(d.region)!;
 const unlocked = d.free || Astro.locals.hasAccess;
 const { Content } = unlocked ? await render(site) : { Content: null };
+const verdict = verdictOf(site);
+const scored = isScored(d.scores);
+const full = d.scores as Required<typeof d.scores>;
+
+// Other sites at the same stop, shown as tabs.
+const siblings = d.group
+  ? (await getSites())
+      .filter((s) => s.data.group === d.group && s.data.region === d.region)
+      .sort((a, b) => a.data.title.localeCompare(b.data.title))
+  : [];
+
+const pips = (n: number) => [1, 2, 3, 4, 5].map((i) => (n >= i ? 'on' : n >= i - 0.5 ? 'half' : ''));
 
 // Paid content must never be cached by a CDN and served to someone else.
 Astro.response.headers.set('Cache-Control', unlocked && !d.free ? 'private, no-store' : 'public, max-age=300');
 ---
 
-<Layout tripPass title={d.title} description={d.summary}>
-  <a class="back" href={`/trip-pass/${region.slug}`}>← {region.name}</a>
-  {d.group && <span class="eyebrow group">{d.group}</span>}
-  <h1>{d.title}</h1>
-
-  <div class="facts">
-    <Verdict verdict={d.verdict} large />
-    {d.timeNeeded && <span>Allow {d.timeNeeded}</span>}
-    {d.lastVisited && <span>Last visited {d.lastVisited}</span>}
-    {d.free && <span class="free">Free sample</span>}
-    {d.draft && <span class="draft">Draft</span>}
-  </div>
-
-  <section class="what">
-    <h2>What is it?</h2>
-    {d.summary ? <p>{d.summary}</p> : <p class="todo">Summary still to write.</p>}
-  </section>
-
-  <Videos videos={d.videos} title={d.title} />
+<Layout tripPass wide title={d.title} description={d.summary}>
+  <a class="back" href={`/trip-pass?region=${region.slug}`}>← Back to all sites</a>
+  <span class="eyebrow stop">{region.name}{d.group ? ` · ${d.group}` : ''}</span>
 
   {
-    Content ? (
-      <article class="body">
-        <Content />
-      </article>
-    ) : (
-      <div class="paywall card">
-        <h2>Our honest verdict is part of the trip pass</h2>
-        <p>
-          What it's really like to be there, whether it's worth your time, and the practical details. One pass covers
-          every site in Egypt for a year.
-        </p>
-        <a class="btn-gold" href="/trip-pass#get-the-pass">
-          Get the trip pass
-        </a>
-      </div>
+    siblings.length > 1 && (
+      <nav class="tabs" aria-label="Sites at this stop">
+        {siblings.map((s) => (
+          <a href={`/trip-pass/sites/${s.id}`} aria-current={s.id === site.id ? 'page' : undefined}>
+            {s.data.title}
+          </a>
+        ))}
+      </nav>
     )
   }
+
+  <div class="title-row">
+    <div>
+      <h1>{d.title}</h1>
+      <div class="facts">
+        <Verdict verdict={verdict} large />
+        {d.lastVisited && <span>Last visited {d.lastVisited}</span>}
+        {d.free && <span class="free">Free sample</span>}
+        {d.draft && <span class="draft">Draft</span>}
+      </div>
+    </div>
+    <button type="button" class="plan-btn" data-plan={site.id} aria-pressed="false">+ Add to plan</button>
+  </div>
+
+  <div class="layout">
+    <div class="main">
+      <section class="what">
+        <h2>What is it?</h2>
+        {d.summary ? <p>{d.summary}</p> : <p class="todo">Summary still to write.</p>}
+      </section>
+
+      <Videos videos={d.videos} title={d.title} />
+      {d.videos.length === 0 && <p class="no-footage card">Our footage of this site is coming.</p>}
+
+      {
+        Content ? (
+          <article class="body card">
+            <Content />
+          </article>
+        ) : (
+          <div class="paywall card">
+            <h2>Our honest verdict is part of the trip pass</h2>
+            <p>
+              The scores, what it's really like to be there, and the practical details. One pass covers every site in
+              Egypt for a year.
+            </p>
+            <a class="btn-gold" href="/trip-pass#get-the-pass">
+              Get the trip pass
+            </a>
+          </div>
+        )
+      }
+
+      {
+        unlocked && (d.timeNeeded || d.gettingThere || d.tip) && (
+          <section class="factline" aria-label="How long to allow">
+            {d.timeNeeded && (
+              <div>
+                <span class="label">Time on site</span>
+                <span class="value">{d.timeNeeded}</span>
+              </div>
+            )}
+            {d.gettingThere && (
+              <div>
+                <span class="label">Getting there</span>
+                <span class="value">{d.gettingThere}</span>
+              </div>
+            )}
+            {d.tip && (
+              <div>
+                <span class="label">Our tip</span>
+                <span class="value">{d.tip}</span>
+              </div>
+            )}
+          </section>
+        )
+      }
+    </div>
+
+    {
+      unlocked && (
+        <aside class="scorecard card" aria-labelledby="verdict-title">
+          <h2 id="verdict-title">Our honest verdict</h2>
+          {scored ? (
+            <>
+              <p class="sub">Scored 1–5 against the benchmark sites.</p>
+              <div class="rows">
+                {CRITERIA.map((c) => (
+                  <div class="row">
+                    <div class="row-head">
+                      <span class="row-label">{c.label}</span>
+                      <span class="row-score">{full[c.key]} / 5</span>
+                    </div>
+                    <div class="pips" role="img" aria-label={`${c.label}: ${full[c.key]} of 5`}>
+                      {pips(full[c.key]).map((cls) => (
+                        <span class:list={['pip', cls]} />
+                      ))}
+                    </div>
+                    <span class="bench">5 = {c.benchmark}</span>
+                  </div>
+                ))}
+              </div>
+              <div class="tiles">
+                <div>
+                  <span class="label">Reward</span>
+                  <span class="big">{rewardScore(full)}</span>
+                </div>
+                <div>
+                  <span class="label">Getting there</span>
+                  <span class="big">{full.access}</span>
+                </div>
+              </div>
+              <p class="reason">{d.verdict && d.verdictNote ? d.verdictNote : verdictReason(full)}</p>
+            </>
+          ) : (
+            <p class="sub">Not scored yet. The scores appear here once we've agreed them.</p>
+          )}
+        </aside>
+      )
+    }
+  </div>
 </Layout>
+
+<script>
+  const KEY = 'ebyg-plan';
+  const read = (): string[] => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
+  };
+  document.querySelectorAll<HTMLButtonElement>('button[data-plan]').forEach((btn) => {
+    const id = btn.dataset.plan!;
+    const paint = () => {
+      const on = read().includes(id);
+      btn.textContent = on ? 'Added to plan' : '+ Add to plan';
+      btn.setAttribute('aria-pressed', String(on));
+    };
+    btn.addEventListener('click', () => {
+      const plan = read();
+      localStorage.setItem(KEY, JSON.stringify(plan.includes(id) ? plan.filter((x) => x !== id) : [...plan, id]));
+      window.dispatchEvent(new Event('plan-changed'));
+      paint();
+    });
+    paint();
+  });
+</script>
 
 <style>
   .back {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 700;
     text-decoration: none;
   }
-  .group {
+  .stop {
     display: block !important;
     margin-top: 18px;
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0 22px;
+  }
+  .tabs a {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--papyrus-dark);
+    background: #fff;
+    color: var(--ink) !important;
+    text-decoration: none;
+    font-size: 0.92rem;
+  }
+  .tabs a[aria-current='page'] {
+    background: var(--lapis);
+    border-color: var(--lapis);
+    color: #fff !important;
+    font-weight: 700;
+  }
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .title-row h1 {
+    margin-bottom: 8px !important;
   }
   .facts {
     display: flex;
@@ -88,14 +251,51 @@ Astro.response.headers.set('Cache-Control', unlocked && !d.free ? 'private, no-s
     padding: 1px 8px;
     border-radius: 3px;
   }
+  .plan-btn {
+    min-height: 48px;
+    padding: 0 22px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--lapis);
+    color: #fff;
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .plan-btn[aria-pressed='true'] {
+    background: var(--papyrus);
+    color: var(--lapis);
+    border: 1px solid var(--gold);
+  }
+  .layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .main {
+    flex: 999 1 560px;
+    min-width: 0;
+  }
   .what h2,
   .body :global(h2) {
-    font-size: 1.15rem !important;
-    margin: 28px 0 8px !important;
+    font-size: 1.2rem !important;
+    margin: 24px 0 8px !important;
+  }
+  .body :global(h2:first-child) {
+    margin-top: 0 !important;
   }
   .todo {
     color: #a8442f;
     font-style: italic;
+  }
+  .no-footage {
+    text-align: center;
+    color: var(--ink-soft);
+  }
+  .body {
+    margin-top: 20px;
   }
   .paywall {
     margin-top: 28px;
@@ -104,5 +304,101 @@ Astro.response.headers.set('Cache-Control', unlocked && !d.free ? 'private, no-s
   }
   .paywall h2 {
     font-size: 1.15rem !important;
+  }
+  .factline {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: var(--papyrus-dark);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .factline div {
+    flex: 1 1 160px;
+    display: flex;
+    flex-direction: column;
+  }
+  .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sandstone);
+  }
+  .value {
+    font-weight: 700;
+    color: var(--lapis);
+  }
+  .scorecard {
+    flex: 1 1 340px;
+    max-width: 420px;
+    border-top: 3px solid var(--gold);
+  }
+  .scorecard h2 {
+    font-size: 1.3rem !important;
+    margin-bottom: 2px !important;
+  }
+  .sub {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .row-head {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    color: var(--lapis);
+    font-size: 0.92rem;
+  }
+  .pips {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    margin: 5px 0 3px;
+  }
+  .pip {
+    height: 9px;
+    border-radius: 3px;
+    background: var(--papyrus);
+  }
+  .pip.on {
+    background: var(--lapis);
+  }
+  .pip.half {
+    background: linear-gradient(90deg, var(--lapis) 50%, var(--papyrus) 50%);
+  }
+  .bench {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--papyrus);
+  }
+  .tiles div {
+    background: var(--papyrus);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .big {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--lapis);
+  }
+  .reason {
+    margin-top: 12px !important;
+    font-size: 0.92rem;
   }
 </style>

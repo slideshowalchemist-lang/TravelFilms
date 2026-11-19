@@ -16,9 +16,5 @@ export const REGION_SLUGS = REGIONS.map((r) => r.slug) as [RegionSlug, ...Region
 
 export const regionBySlug = (slug: string) => REGIONS.find((r) => r.slug === slug);
 
-export const VERDICTS = {
-  unmissable: 'Unmissable',
-  'worth-it': 'Worth it',
-  enthusiasts: 'For enthusiasts',
-  skip: 'Skip it',
-} as const;
+// Verdict names live with the rubric (src/lib/rubric.ts).
+export { VERDICT_LABELS as VERDICTS } from '~/lib/rubric';

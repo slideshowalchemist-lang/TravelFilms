@@ -1,113 +1,614 @@
 ---
+// Explore: every site card, filterable by the rubric scores. Rendered on request so the
+// owner-preview lock (src/middleware.ts) can check who's visiting.
+export const prerender = false;
+
 import Layout from '~/layouts/TripPassLayout.astro';
-import SiteRow from '~/components/trip-pass/SiteRow.astro';
 import PassOffer from '~/components/trip-pass/PassOffer.astro';
 import { REGIONS } from '~/data/regions';
-import { getSites } from '~/lib/sites';
+import { CRITERIA, VERDICT_LABELS } from '~/lib/rubric';
+import { cardData, getSites } from '~/lib/sites';
 
 const sites = await getSites();
-const countFor = (slug: string) => sites.filter((s) => s.data.region === slug).length;
-const samples = sites.filter((s) => s.data.free);
+const regionOrder = REGIONS.map((r) => r.slug as string);
+const cards = sites
+  .map(cardData)
+  .sort((a, b) => regionOrder.indexOf(a.region) - regionOrder.indexOf(b.region) || a.title.localeCompare(b.title));
+const scoredCount = cards.filter((c) => c.reward !== null).length;
+const startRegion = Astro.url.searchParams.get('region') ?? 'all';
+
+const data = {
+  cards,
+  regions: REGIONS.map((r) => ({ slug: r.slug, name: r.name })),
+  criteria: CRITERIA.map((c) => ({ key: c.key, short: c.short })),
+  verdicts: VERDICT_LABELS,
+  startRegion,
+};
+const MUST_HAVE = CRITERIA.filter((c) => ['scale', 'preservation', 'colour', 'sculpture'].includes(c.key));
 ---
 
-<Layout tripPass title="Trip pass" description="Our honest verdict on every major site in Egypt, with real footage. One pass, twelve months.">
+<Layout tripPass wide title="Explore sites" description="Our honest verdict on every major site in Egypt, scored and filterable.">
   <section class="intro">
-    <span class="eyebrow">The Egypt trip pass</span>
-    <h1>Know which sites are worth your time, before you go</h1>
+    <span class="eyebrow">Explore</span>
+    <h1>Find the sites worth your time</h1>
     <p class="lede">
-      Egypt is a big trip, and you only get so many days there. The trip pass is our honest, first-hand verdict on every
-      major site: what it's really like to stand there, whether it's worth your limited time, how long to allow, and how
-      to get there. Every card comes with our own footage, so you can see it for yourself.
+      Every site is scored on the same seven criteria, benchmarked against Karnak, Dendera, Abu Simbel and Nefertari.
+      Filter for what matters to you, then add sites to your plan.
     </p>
-    <p class="lede small">Planning with ChatGPT or a tour company? Use the trip pass to check what they can't tell you.</p>
-  </section>
-
-  <section>
-    <PassOffer siteCount={sites.length} />
     {
-      import.meta.env.DEV && (
-        <p class="dev" style="text-align:center">
-          Local testing only: <a href="/api/dev-pass?next=/trip-pass">give myself a pass</a> ·{' '}
-          <a href="/api/dev-pass?off=1&next=/trip-pass">remove it</a>
+      Astro.locals.isOwner && (
+        <p class="progress">
+          {scoredCount} of {cards.length} cards scored so far
         </p>
       )
     }
   </section>
 
+  <div class="explore">
+    <aside class="filters card" aria-label="Filters">
+      <fieldset>
+        <legend>Region</legend>
+        <div class="chips" data-filter="region">
+          <button type="button" class="chip" data-value="all" aria-pressed="true">All</button>
+          {
+            REGIONS.map((r) => (
+              <button type="button" class="chip" data-value={r.slug} aria-pressed="false">
+                {r.name}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Verdict</legend>
+        <div class="stack" data-filter="verdict">
+          {
+            Object.entries(VERDICT_LABELS).map(([key, label]) => (
+              <button type="button" class="toggle" data-value={key} aria-pressed="false">
+                {label}
+              </button>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Must have</legend>
+        <p class="hint">Minimum score on what you care about most.</p>
+        {
+          MUST_HAVE.map((c) => (
+            <div class="min-row">
+              <span class="min-label">{c.label}</span>
+              <div class="seg" data-filter="min" data-key={c.key}>
+                <button type="button" data-value="0" aria-pressed="true">Any</button>
+                <button type="button" data-value="3" aria-pressed="false">3+</button>
+                <button type="button" data-value="4" aria-pressed="false">4+</button>
+              </div>
+            </div>
+          ))
+        }
+      </fieldset>
+
+      <fieldset>
+        <legend>Getting there</legend>
+        <div class="seg" data-filter="access">
+          <button type="button" data-value="0" aria-pressed="true">Any</button>
+          <button type="button" data-value="4" aria-pressed="false">Easy (4+)</button>
+        </div>
+      </fieldset>
+
+      <button type="button" class="reset" id="tp-reset">Clear all filters</button>
+    </aside>
+
+    <div class="results">
+      <div class="results-bar">
+        <p id="tp-count" aria-live="polite"></p>
+        <div class="sort" data-filter="sort">
+          <span>Sort by</span>
+          <button type="button" class="chip" data-value="reward" aria-pressed="true">Reward</button>
+          <button type="button" class="chip" data-value="colour" aria-pressed="false">Colour</button>
+          <button type="button" class="chip" data-value="access" aria-pressed="false">Easiest to reach</button>
+        </div>
+      </div>
+      <p id="tp-empty" class="card empty" hidden>
+        No sites match all of those. Try lowering a minimum score or clearing a filter.
+      </p>
+      <div id="tp-grid" class="grid"></div>
+    </div>
+  </div>
+
   {
-    samples.length > 0 && (
-      <section>
-        <span class="eyebrow">Free samples</span>
-        <h2>Read a full card, free</h2>
-        <p class="muted">These cards are open to everyone, so you can see exactly what the pass gives you.</p>
-        {samples.map((s) => (
-          <SiteRow site={s} />
-        ))}
+    !Astro.locals.hasAccess && (
+      <section class="offer-wrap">
+        <PassOffer siteCount={sites.length} />
       </section>
     )
   }
 
-  <section>
-    <span class="eyebrow">Inside the pass</span>
-    <h2>Browse by region</h2>
-    <div class="regions">
-      {
-        REGIONS.map((r) => (
-          <a class="region card" href={`/trip-pass/${r.slug}`}>
-            <h3>{r.name}</h3>
-            <p>{r.blurb}</p>
-            <span class="count">
-              {countFor(r.slug)} {countFor(r.slug) === 1 ? 'site' : 'sites'}
-            </span>
-          </a>
-        ))
-      }
-    </div>
-  </section>
+  <script type="application/json" id="tp-data" set:html={JSON.stringify(data).replace(/</g, '\\u003c')} />
 </Layout>
 
-<style>
-  section {
-    margin-bottom: 52px;
+<script>
+  type Card = {
+    id: string;
+    title: string;
+    region: string;
+    group: string | null;
+    verdict: string;
+    scores: Record<string, number>;
+    reward: number | null;
+    timeNeeded: string;
+    gettingThere: string;
+    thumb: string | null;
+    draft: boolean;
+  };
+  const data = JSON.parse(document.getElementById('tp-data')!.textContent!);
+  const cards: Card[] = data.cards;
+  const regionName: Record<string, string> = Object.fromEntries(data.regions.map((r: any) => [r.slug, r.name]));
+  const criteria: { key: string; short: string }[] = data.criteria;
+  const verdicts: Record<string, string> = data.verdicts;
+
+  const KEY = 'ebyg-plan';
+  const readPlan = (): string[] => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
+  };
+  const writePlan = (ids: string[]) => {
+    localStorage.setItem(KEY, JSON.stringify(ids));
+    window.dispatchEvent(new Event('plan-changed'));
+  };
+
+  const state = {
+    region: data.regions.some((r: any) => r.slug === data.startRegion) ? data.startRegion : 'all',
+    verdicts: [] as string[],
+    mins: {} as Record<string, number>,
+    access: 0,
+    sort: 'reward',
+  };
+
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+  function pips(n: number) {
+    let out = '';
+    for (let i = 1; i <= 5; i++) {
+      const cls = n >= i ? 'on' : n >= i - 0.5 ? 'half' : '';
+      out += `<span class="pip ${cls}"></span>`;
+    }
+    return out;
   }
+
+  function cardHtml(c: Card, inPlan: boolean) {
+    const verdict = c.verdict
+      ? `<span class="verdict v-${c.verdict}">${esc(verdicts[c.verdict])}</span>`
+      : `<span class="unscored">Not scored yet</span>`;
+    const scores =
+      c.reward !== null
+        ? `<div class="scores" role="img" aria-label="${esc(criteria.map((k) => `${k.short} ${c.scores[k.key]} of 5`).join(', '))}">${criteria
+            .map((k) => `<div class="score-row"><span>${esc(k.short)}</span><span class="pips">${pips(c.scores[k.key])}</span></div>`)
+            .join('')}</div>`
+        : '';
+    const fact = [c.timeNeeded, c.gettingThere].filter(Boolean).map(esc).join(' · ');
+    const thumb = c.thumb
+      ? `<img src="${esc(c.thumb)}" alt="" loading="lazy" />`
+      : `<span class="no-footage">Footage coming</span>`;
+    return `<article class="site card">
+      <a class="thumb" href="/trip-pass/sites/${esc(c.id)}" tabindex="-1" aria-hidden="true">${thumb}</a>
+      <div class="body">
+        <div class="head">
+          <div>
+            <span class="eyebrow">${esc(regionName[c.region] ?? '')}${c.group ? ' · ' + esc(c.group) : ''}</span>
+            <h3><a href="/trip-pass/sites/${esc(c.id)}">${esc(c.title)}</a></h3>
+          </div>
+          ${verdict}
+        </div>
+        ${scores}
+        ${fact ? `<p class="fact">${fact}</p>` : ''}
+        ${c.draft ? '<span class="draft">Draft</span>' : ''}
+        <div class="actions">
+          <a class="btn-outline" href="/trip-pass/sites/${esc(c.id)}">View site</a>
+          <button type="button" class="${inPlan ? 'btn-added' : 'btn-add'}" data-plan="${esc(c.id)}" aria-pressed="${inPlan}">
+            ${inPlan ? 'Added to plan' : '+ Add to plan'}
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function render() {
+    const plan = readPlan();
+    let list = cards.filter((c) => {
+      if (state.region !== 'all' && c.region !== state.region) return false;
+      if (state.verdicts.length && !state.verdicts.includes(c.verdict)) return false;
+      for (const [k, min] of Object.entries(state.mins)) if (min && !(c.scores[k] >= min)) return false;
+      if (state.access && !(c.scores.access >= state.access)) return false;
+      return true;
+    });
+    const val = (c: Card) =>
+      state.sort === 'colour' ? (c.scores.colour ?? -1) : state.sort === 'access' ? (c.scores.access ?? -1) : (c.reward ?? -1);
+    list = [...list].sort((a, b) => val(b) - val(a) || (b.reward ?? -1) - (a.reward ?? -1));
+
+    document.getElementById('tp-grid')!.innerHTML = list.map((c) => cardHtml(c, plan.includes(c.id))).join('');
+    document.getElementById('tp-count')!.innerHTML = `<strong>${list.length}</strong> of ${cards.length} sites`;
+    document.getElementById('tp-empty')!.hidden = list.length > 0;
+  }
+
+  function setPressed(group: Element, pick: (b: HTMLButtonElement) => boolean) {
+    group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(pick(b as HTMLButtonElement))));
+  }
+
+  document.querySelectorAll('[data-filter]').forEach((group) => {
+    const kind = (group as HTMLElement).dataset.filter!;
+    group.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button');
+      if (!btn) return;
+      const v = btn.dataset.value!;
+      if (kind === 'region') state.region = v;
+      if (kind === 'sort') state.sort = v;
+      if (kind === 'access') state.access = Number(v);
+      if (kind === 'min') state.mins[(group as HTMLElement).dataset.key!] = Number(v);
+      if (kind === 'verdict')
+        state.verdicts = state.verdicts.includes(v) ? state.verdicts.filter((x) => x !== v) : [...state.verdicts, v];
+      if (kind === 'verdict') setPressed(group, (b) => state.verdicts.includes(b.dataset.value!));
+      else setPressed(group, (b) => b === btn);
+      render();
+    });
+  });
+
+  // Reflect a ?region= start value in the chips.
+  setPressed(document.querySelector('[data-filter="region"]')!, (b) => b.dataset.value === state.region);
+
+  document.getElementById('tp-reset')!.addEventListener('click', () => {
+    state.region = 'all';
+    state.verdicts = [];
+    state.mins = {};
+    state.access = 0;
+    document.querySelectorAll('[data-filter]').forEach((g) => {
+      const kind = (g as HTMLElement).dataset.filter;
+      if (kind === 'sort') return;
+      setPressed(g, (b) => (kind === 'verdict' ? false : b.dataset.value === 'all' || b.dataset.value === '0'));
+    });
+    render();
+  });
+
+  document.getElementById('tp-grid')!.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button[data-plan]') as HTMLButtonElement | null;
+    if (!btn) return;
+    const id = btn.dataset.plan!;
+    const plan = readPlan();
+    writePlan(plan.includes(id) ? plan.filter((x) => x !== id) : [...plan, id]);
+    render();
+  });
+
+  render();
+</script>
+
+<style>
   .intro {
-    text-align: center;
+    margin-bottom: 28px;
   }
   .lede {
-    max-width: 680px;
-    margin: 0 auto 14px !important;
+    max-width: 760px;
     font-size: 1.08rem;
   }
-  .lede.small,
-  .muted {
-    font-size: 0.95rem;
+  .progress {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--lapis);
+    background: var(--papyrus-dark);
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .explore {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .filters {
+    flex: 1 1 260px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  @media (max-width: 760px) {
+    .filters {
+      max-width: none;
+    }
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  legend {
+    font-family: 'Cinzel', serif;
+    color: var(--lapis);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .hint {
+    font-size: 0.85rem;
     color: var(--ink-soft);
+    margin: -4px 0 10px !important;
   }
-  .regions {
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .chip,
+  .toggle,
+  .seg button,
+  .reset {
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .chip {
+    min-height: 40px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--papyrus-dark);
+    background: #fff;
+    font-size: 0.88rem;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--lapis);
+    border-color: var(--lapis);
+    color: #fff;
+    font-weight: 700;
+  }
+  .toggle {
+    min-height: 42px;
+    text-align: left;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 2px solid var(--papyrus);
+    background: #fff;
+    font-size: 0.95rem;
+  }
+  .toggle[aria-pressed='true'] {
+    border-color: var(--lapis);
+    background: var(--papyrus);
+    color: var(--lapis);
+    font-weight: 700;
+  }
+  .min-row {
+    margin-bottom: 10px;
+  }
+  .min-label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .seg {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 4px;
+    background: var(--papyrus);
+    padding: 4px;
+    border-radius: 8px;
   }
-  .region {
-    text-decoration: none;
-    color: inherit;
-    border: 1px solid transparent;
+  .seg button {
+    min-height: 38px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 0.88rem;
   }
-  .region:hover {
-    border-color: var(--gold);
+  .seg button[aria-pressed='true'] {
+    background: var(--lapis);
+    color: #fff;
+    font-weight: 700;
   }
-  .region h3 {
-    margin: 0 0 6px;
-    font-size: 1.05rem;
+  .reset {
+    min-height: 42px;
+    border-radius: 8px;
+    border: 1px solid var(--papyrus-dark);
+    background: #fff;
+    color: var(--lapis);
+    font-weight: 700;
   }
-  .region p {
-    margin: 0 0 8px;
+  .results {
+    flex: 999 1 560px;
+    min-width: 0;
+  }
+  .results-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .results-bar p {
+    margin: 0 !important;
+  }
+  .sort {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
     font-size: 0.9rem;
     color: var(--ink-soft);
   }
-  .count {
-    font-size: 0.78rem;
+  .empty {
+    text-align: center;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+  }
+  .grid :global(.site) {
+    padding: 0;
+    overflow: hidden;
+    border-top: 3px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+  }
+  .grid :global(.thumb) {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    background: var(--lapis-dark);
+  }
+  .grid :global(.thumb img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .grid :global(.no-footage) {
+    color: var(--papyrus-dark);
+    font-size: 0.85rem;
+  }
+  .grid :global(.body) {
+    padding: 14px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+  }
+  .grid :global(.head) {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .grid :global(.head .eyebrow) {
+    font-size: 0.68rem;
+  }
+  .grid :global(h3) {
+    margin: 2px 0 0 !important;
+    font-size: 1.1rem;
+  }
+  .grid :global(h3 a) {
+    text-decoration: none;
+  }
+  .grid :global(.verdict) {
+    flex-shrink: 0;
     font-weight: 700;
-    color: var(--sandstone);
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .grid :global(.v-unmissable) {
+    background: var(--gold);
+    color: var(--lapis-dark);
+  }
+  .grid :global(.v-worth-it) {
+    background: var(--lapis);
+    color: var(--papyrus);
+  }
+  .grid :global(.v-enthusiasts) {
+    background: #fff;
+    color: var(--lapis);
+    border: 1px solid var(--lapis);
+  }
+  .grid :global(.v-if-you-have-time) {
+    color: var(--ink-soft);
+    border: 1px solid var(--ink-soft);
+  }
+  .grid :global(.unscored) {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .grid :global(.scores) {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .grid :global(.score-row) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .grid :global(.score-row > span:first-child) {
+    width: 92px;
+  }
+  .grid :global(.pips) {
+    display: flex;
+    gap: 3px;
+  }
+  .grid :global(.pip) {
+    width: 18px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--papyrus);
+  }
+  .grid :global(.pip.on) {
+    background: var(--lapis);
+  }
+  .grid :global(.pip.half) {
+    background: linear-gradient(90deg, var(--lapis) 50%, var(--papyrus) 50%);
+  }
+  .grid :global(.fact) {
+    font-size: 0.88rem;
+    margin: 0 !important;
+    padding-top: 8px;
+    border-top: 1px solid var(--papyrus);
+  }
+  .grid :global(.draft) {
+    align-self: flex-start;
+    font-size: 0.72rem;
+    color: #a8442f;
+    border: 1px dashed #a8442f;
+    padding: 0 6px;
+    border-radius: 3px;
+  }
+  .grid :global(.actions) {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .grid :global(.actions > *) {
+    flex: 1;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+  }
+  .grid :global(.btn-outline) {
+    border: 1px solid var(--lapis);
+    color: var(--lapis);
+  }
+  .grid :global(.btn-add) {
+    border: 0;
+    background: var(--lapis);
+    color: #fff;
+  }
+  .grid :global(.btn-added) {
+    border: 1px solid var(--gold);
+    background: var(--papyrus);
+    color: var(--lapis);
+  }
+  .offer-wrap {
+    margin-top: 56px;
   }
 </style>
